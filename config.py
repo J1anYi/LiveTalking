@@ -59,6 +59,16 @@ def parse_args():
     parser.add_argument('--listenport', type=int, default=8010,
                         help="web listen port")
 
+    # ─── RAG 知识库 ────────────────────────────────────────────────────────
+    parser.add_argument('--rag_enabled', action='store_true',
+                        help="enable RAG knowledge base retrieval")
+    parser.add_argument('--rag_top_k', type=int, default=3,
+                        help="number of documents to retrieve")
+    parser.add_argument('--rag_persist_dir', type=str, default="./data/chromadb",
+                        help="chromadb persistence directory")
+    parser.add_argument('--rag_collection', type=str, default="knowledge_base",
+                        help="chromadb collection name")
+
     opt = parser.parse_args()
 
     # ─── 后处理 ────────────────────────────────────────────────────────
