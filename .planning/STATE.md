@@ -7,9 +7,9 @@
 | Attribute | Value |
 |-----------|-------|
 | Status | In Progress |
-| Current Phase | Phase 4: LLM Integration (Next) |
+| Current Phase | Phase 5: CLI & Configuration (Context Gathered) |
 | Milestone | RAG Knowledge Base Integration |
-| Progress | 50% |
+| Progress | 67% |
 
 ## Phase Status
 
@@ -18,8 +18,8 @@
 | Phase 1: Research & Design | Complete | 100% |
 | Phase 2: Core RAG Module | Complete | 100% |
 | Phase 3: Data Source Connectors | Complete | 100% |
-| Phase 4: LLM Integration | In Progress | 0% |
-| Phase 5: CLI & Configuration | Not Started | 0% |
+| Phase 4: LLM Integration | Complete | 100% |
+| Phase 5: CLI & Configuration | In Progress | 0% |
 | Phase 6: Testing & Documentation | Not Started | 0% |
 
 ## Context Memory
@@ -106,6 +106,27 @@
 - Created PROJECT.md, config.json, REQUIREMENTS.md, ROADMAP.md
 - Codebase analysis completed (7 documents in .planning/codebase/)
 
+## Session History (Phase 4-5)
+
+### Session 2026-05-12 (Phase 4 Execution)
+- 04-01-PLAN.md completed: RAG CLI parameters (config.py)
+  - Added --rag_enabled, --rag_top_k, --rag_persist_dir, --rag_collection
+  - Commit: 17c23ad
+- 04-02-PLAN.md completed: Global RAG retriever initialization (app.py)
+  - Added rag_retriever global variable
+  - Initialization in main() when rag_enabled
+  - Commit: 66e6d05
+- 04-03-PLAN.md completed: LLM RAG integration (llm.py)
+  - Conversation history support (_llm_history)
+  - RAG-enhanced prompt construction
+  - Silent degradation on failure
+  - Commit: 3bfdf95
+
+### Session 2026-05-12 (Phase 5 Context)
+- Phase 5 context gathered
+- Decisions: YAML config file, RAG_* env vars, --rag_config CLI param
+- Context file created: .planning/phases/05-cli-configuration/05-CONTEXT.md
+
 ## Next Actions
 
-1. Phase 4: LLM Integration - Plan execution (auto-advancing)
+1. Phase 5: CLI & Configuration - Planning (auto-advancing)
