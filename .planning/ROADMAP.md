@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 RAG Knowledge Base** — Phases 1-6 (shipped 2026-05-12)
-- 🚧 **v1.1 Bug Fixes & UX Enhancement** — Phases 7-8 (in progress)
+- ✅ **v1.1 Bug Fixes & UX Enhancement** — Phases 7-8 (shipped 2026-05-12)
 
 ## Phases
 
@@ -29,16 +29,18 @@
 
 **Requirements:** EXIT-01, EXIT-02, EXIT-03
 
+**Status:** ✅ Completed (2026-05-12)
+
 **Success Criteria:**
 1. 用户按 Ctrl+C 后，服务在 5 秒内完全退出
 2. 退出后 8010 端口立即释放
 3. 所有后台线程正确停止，无残留进程
 
 **Plans:**
-- [ ] 7.1: 分析并修复 asyncio 信号处理
-- [ ] 7.2: 添加 Avatar session 清理逻辑
-- [ ] 7.3: 添加 Output 模块清理逻辑
-- [ ] 7.4: 测试验证优雅退出
+- [x] 7.1: 分析并修复 asyncio 信号处理
+- [x] 7.2: 添加 Avatar session 清理逻辑
+- [x] 7.3: 添加 Output 模块清理逻辑
+- [x] 7.4: 测试验证优雅退出
 
 ---
 
@@ -48,6 +50,8 @@
 
 **Requirements:** RAG-01, RAG-02, RAG-03, RAG-04, RAG-05
 
+**Status:** ✅ Completed (2026-05-12)
+
 **Success Criteria:**
 1. Dashboard 显示 RAG 模式切换按钮
 2. 用户可切换"仅 RAG"和"RAG+模型知识"两种模式
@@ -55,11 +59,11 @@
 4. 模式状态刷新页面后保持
 
 **Plans:**
-- [ ] 8.1: 添加 `/set_rag_mode` API 端点
-- [ ] 8.2: 修改 llm.py 支持混合模式 prompt
-- [ ] 8.3: 添加 session 级 RAG 模式状态管理
-- [ ] 8.4: Dashboard 前端添加切换按钮
-- [ ] 8.5: 测试验证模式切换功能
+- [x] 8.1: 添加 `/set_rag_mode` API 端点
+- [x] 8.2: 修改 llm.py 支持混合模式 prompt
+- [x] 8.3: 添加 session 级 RAG 模式状态管理
+- [x] 8.4: Dashboard 前端添加切换按钮
+- [x] 8.5: 测试验证模式切换功能
 
 ---
 
@@ -73,10 +77,10 @@
 | 4. LLM Integration | v1.0 | 3/3 | Complete | 2026-05-12 |
 | 5. CLI & Configuration | v1.0 | 5/5 | Complete | 2026-05-12 |
 | 6. Testing & Documentation | v1.0 | 5/5 | Complete | 2026-05-12 |
-| 7. Graceful Exit | v1.1 | 0/4 | Not Started | — |
-| 8. RAG Mode Toggle | v1.1 | 0/5 | Not Started | — |
+| 7. Graceful Exit | v1.1 | 1/1 | Complete | 2026-05-12 |
+| 8. RAG Mode Toggle | v1.1 | 1/1 | Complete | 2026-05-12 |
 
-**Total Progress: 75% (20/29 plans)**
+**Total Progress: 100% (22/22 plans)**
 
 ---
 

@@ -45,11 +45,11 @@
 
 ### RAG Mode Toggle（RAG 模式切换）
 
-- [ ] **RAG-01**: Dashboard 前端添加 RAG 模式切换按钮
-- [ ] **RAG-02**: 支持"仅 RAG"模式 - 只使用知识库内容回答
-- [ ] **RAG-03**: 支持"RAG+模型知识"模式 - 同时使用知识库和 LLM 自身知识
-- [ ] **RAG-04**: 模式状态应持久化（刷新页面后保持选择）
-- [ ] **RAG-05**: API 端点 `/set_rag_mode` 支持模式切换
+- [x] **RAG-01**: Dashboard 前端添加 RAG 模式切换按钮
+- [x] **RAG-02**: 支持"仅 RAG"模式 - 只使用知识库内容回答
+- [x] **RAG-03**: 支持"RAG+模型知识"模式 - 同时使用知识库和 LLM 自身知识
+- [x] **RAG-04**: 模式状态应持久化（刷新页面后保持选择）
+- [x] **RAG-05**: API 端点 `/set_rag_mode` 支持模式切换
 
 ---
 
@@ -68,18 +68,18 @@
 | EXIT-01 | Phase 7 | Completed |
 | EXIT-02 | Phase 7 | Completed |
 | EXIT-03 | Phase 7 | Completed |
-| RAG-01 | Phase 8 | Pending |
-| RAG-02 | Phase 8 | Pending |
-| RAG-03 | Phase 8 | Pending |
-| RAG-04 | Phase 8 | Pending |
-| RAG-05 | Phase 8 | Pending |
+| RAG-01 | Phase 8 | Completed |
+| RAG-02 | Phase 8 | Completed |
+| RAG-03 | Phase 8 | Completed |
+| RAG-04 | Phase 8 | Completed |
+| RAG-05 | Phase 8 | Completed |
 
 **Coverage:**
 - v1.1 requirements: 8 total
 - Mapped to phases: 8
 - Unmapped: 0 ✓
-- Completed: 3 (EXIT-01, EXIT-02, EXIT-03)
+- Completed: 8 (EXIT-01, EXIT-02, EXIT-03, RAG-01, RAG-02, RAG-03, RAG-04, RAG-05)
 
 ---
 *Requirements defined: 2026-05-12*
-*Last updated: 2026-05-12 after v1.1 milestone start*
+*Last updated: 2026-05-12 after v1.1 milestone completion*
