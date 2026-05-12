@@ -469,6 +469,115 @@ all_documents = registry.load_all()
 
 ---
 
+## 使用流程演示
+
+### 1. 环境准备
+
+设置 DashScope API Key：
+
+```bash
+# Linux/macOS
+export DASHSCOPE_API_KEY=sk-your-api-key
+
+# Windows PowerShell
+$env:DASHSCOPE_API_KEY="sk-your-api-key"
+```
+
+### 2. 准备知识库数据
+
+示例数据位于 `data/knowledge_base/` 目录：
+- `faq.txt` - 常见问题解答
+- `product.md` - 产品功能说明
+
+您可以添加自己的文档到此目录，支持的格式：TXT、MD、PDF、DOCX。
+
+### 3. 启动服务
+
+```bash
+# 启用 RAG 功能运行
+python app.py --rag_enabled --rag_top_k 3 --model wav2lip --avatar_id wav2lip256_avatar1
+
+# 或使用配置文件
+python app.py --rag_config data/rag_config.yaml --model wav2lip --avatar_id wav2lip256_avatar1
+```
+
+### 4. 测试检索功能
+
+```bash
+# 使用 curl 测试
+curl -X POST http://localhost:8010/human \
+  -H "Content-Type: application/json" \
+  -d '{"text": "什么是 RAG 知识库？"}'
+
+# 预期响应
+# {"response": "RAG 是 Retrieval Augmented Generation 的缩写..."}
+```
+
+### 5. 查看检索日志
+
+启动时会显示日志：
+
+```
+[INFO] RAG enabled, initializing retriever...
+[INFO] RAG retriever initialized, documents: 10
+[INFO] Retrieval query: 什么是 RAG 知识库？
+[INFO] Retrieved 3 chunks
+```
+
+### 6. 验证知识库内容
+
+```python
+# Python 直接测试
+from rag import quick_retrieve
+
+results = quick_retrieve("什么是 RAG？", top_k=3)
+for r in results:
+    print(f"Score: {r.get('distance', 'N/A')}")
+    print(f"Content: {r['text'][:100]}...")
+```
+
+### 7. 更新知识库
+
+```bash
+# 添加新文档到知识库
+cp new_document.txt data/knowledge_base/
+
+# 重新索引（需要重启服务）
+python app.py --rag_enabled --rag_reindex
+```
+
+### 8. 使用环境变量配置
+
+```bash
+# 完整环境变量配置
+export RAG_ENABLED=true
+export RAG_TOP_K=5
+export RAG_PERSIST_DIR=./data/chromadb
+export RAG_COLLECTION=knowledge_base
+export DASHSCOPE_API_KEY=sk-your-api-key
+
+python app.py --model wav2lip --avatar_id wav2lip256_avatar1
+```
+
+### 9. 完整示例脚本
+
+```python
+# test_rag.py
+import os
+from rag import RAGRetriever, VectorStore, DashScopeEmbedding
+
+# 初始化
+embedding = DashScopeEmbedding()
+store = VectorStore(persist_dir="./data/chromadb")
+retriever = RAGRetriever(store, embedding, top_k=3)
+
+# 检索
+results = retriever.retrieve("LiveTalking 是什么？")
+print(f"找到 {len(results)} 个相关结果")
+```
+
+---
+
 ## FAQ
 
 ### Q: 如何添加新的知识文档？

@@ -1,0 +1,236 @@
+# LiveTalking 常见问题解答 (FAQ)
+
+## 1. LiveTalking 是什么？
+
+LiveTalking 是一个实时交互流式数字人系统，实现音视频同步对话。系统支持多种数字人模型（wav2lip、musetalk、ultralight）、声音克隆、多种输出方式（WebRTC、RTMP、虚拟摄像头）。
+
+主要特点：
+- 实时语音识别与合成
+- 高质量数字人渲染
+- 多种输出方式支持
+- 可扩展的插件架构
+
+---
+
+## 2. RAG 知识库功能是什么？
+
+RAG (Retrieval Augmented Generation) 知识库功能为数字人提供智能知识检索能力。当用户提问时，系统会先从知识库中检索相关内容，然后将检索结果作为上下文注入到 LLM prompt 中，使数字人能够基于特定知识库回答问题。
+
+RAG 的优势：
+- 回答更加精准和专业
+- 支持企业私有知识
+- 减少 LLM 幻觉
+- 知识库可动态更新
+
+---
+
+## 3. 如何启用 RAG 知识库？
+
+启用 RAG 功能有多种方式：
+
+### 方式一：使用命令行参数
+```bash
+python app.py --rag_enabled --rag_top_k 3 --model wav2lip --avatar_id wav2lip256_avatar1
+```
+
+### 方式二：使用配置文件
+```bash
+# 复制示例配置
+cp data/rag_config.yaml.example data/rag_config.yaml
+
+# 编辑配置文件，设置 enabled: true
+# 然后启动
+python app.py --rag_config data/rag_config.yaml --model wav2lip
+```
+
+### 方式三：使用环境变量
+```bash
+export RAG_ENABLED=true
+export RAG_TOP_K=5
+python app.py --model wav2lip
+```
+
+---
+
+## 4. 如何添加知识文档？
+
+将文档放入 `data/knowledge_base/` 目录，重启应用即可自动加载。
+
+支持的文档格式：
+- `.txt` - 纯文本文件
+- `.md` - Markdown 文档
+- `.pdf` - PDF 文档
+- `.docx` - Word 文档
+
+文档建议：
+- 单个文档不宜过大（建议 < 10MB）
+- 内容应有明确主题
+- 使用 UTF-8 编码
+
+---
+
+## 5. 检索结果不准确怎么办？
+
+如果检索结果不准确，可以尝试以下方法：
+
+### 调整检索参数
+```bash
+# 增加检索数量
+python app.py --rag_enabled --rag_top_k 5
+```
+
+### 优化文档分块
+在配置文件中调整分块参数：
+```yaml
+rag:
+  chunk_size: 800      # 分块大小
+  chunk_overlap: 100   # 分块重叠
+```
+
+### 改进知识库内容
+- 确保文档内容与预期查询相关
+- 使用清晰、简洁的语言
+- 添加适当的标题和段落
+
+---
+
+## 6. 支持哪些数字人模型？
+
+LiveTalking 目前支持三种数字人模型：
+
+| 模型 | 特点 | 推荐场景 |
+|------|------|----------|
+| wav2lip | 高质量唇形同步 | 高质量视频输出 |
+| musetalk | 流畅自然表情 | 实时互动场景 |
+| ultralight | 轻量快速 | 低延迟场景 |
+
+使用方法：
+```bash
+python app.py --model wav2lip --avatar_id wav2lip256_avatar1
+python app.py --model musetalk --avatar_id musetalk_avatar1
+python app.py --model ultralight --avatar_id ultralight_avatar1
+```
+
+---
+
+## 7. 如何配置声音克隆？
+
+系统支持多种 TTS 引擎：
+
+### Edge TTS（默认，免费）
+```bash
+python app.py --tts edgetts --model wav2lip --avatar_id wav2lip256_avatar1
+```
+
+### 自定义 TTS
+需要配置相应的 TTS 服务 API，具体请参考 TTS 插件文档。
+
+---
+
+## 8. 支持哪些输出方式？
+
+LiveTalking 支持三种输出方式：
+
+| 输出方式 | 特点 | 使用场景 |
+|----------|------|----------|
+| WebRTC | 低延迟、双向通信 | 实时互动、网页端 |
+| RTMP | 推流到直播平台 | 直播场景 |
+| Virtual Camera | 虚拟摄像头输出 | 视频会议 |
+
+使用方法：
+```bash
+# WebRTC 模式
+python app.py --transport webrtc --model wav2lip
+
+# RTMP 模式
+python app.py --transport rtmp --model wav2lip
+```
+
+---
+
+## 9. 如何设置环境变量？
+
+需要设置以下环境变量：
+
+### 必需的环境变量
+```bash
+# LLM API Key（用于对话）
+export DASHSCOPE_API_KEY=sk-your-api-key
+```
+
+### 可选的 RAG 环境变量
+```bash
+# 启用 RAG
+export RAG_ENABLED=true
+
+# 检索数量
+export RAG_TOP_K=5
+
+# 向量存储路径
+export RAG_PERSIST_DIR=./data/chromadb
+
+# 集合名称
+export RAG_COLLECTION=knowledge_base
+```
+
+---
+
+## 10. 常见错误如何解决？
+
+### 错误：DASHSCOPE_API_KEY 未设置
+```
+解决：export DASHSCOPE_API_KEY=sk-your-api-key
+```
+
+### 错误：端口被占用
+```
+解决：检查 8010 端口是否被占用，或使用其他端口
+python app.py --port 8011
+```
+
+### 错误：模型文件未找到
+```
+解决：确保 models/ 目录存在且包含所需模型文件
+检查 avatar_id 是否正确
+```
+
+### 错误：ChromaDB 初始化失败
+```
+解决：确保 persist_dir 目录有写入权限
+确保磁盘空间充足
+```
+
+---
+
+## 11. 如何调试问题？
+
+查看日志信息：
+```bash
+# 日志会输出到控制台
+python app.py --model wav2lip --avatar_id wav2lip256_avatar1
+```
+
+常见调试方法：
+- 检查控制台错误信息
+- 验证 API Key 是否有效
+- 确认网络连接正常
+- 检查文件路径和权限
+
+---
+
+## 12. 性能优化建议？
+
+### 服务器端优化
+- 使用 GPU 加速数字人渲染
+- 将向量数据库放在 SSD 上
+- 适当增加 chunk_size 减少索引数量
+
+### 网络优化
+- 使用 WebRTC 模式获得最低延迟
+- 确保服务器带宽充足
+- 对于远程访问，考虑使用 CDN
+
+### 资源配置
+- CPU: 4 核以上推荐
+- 内存: 8GB 以上推荐
+- GPU: NVIDIA GPU 推荐（CUDA 支持）
