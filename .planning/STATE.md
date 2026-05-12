@@ -17,7 +17,7 @@
 |-------|--------|----------|
 | Phase 1: Research & Design | Complete | 100% |
 | Phase 2: Core RAG Module | Complete | 100% |
-| Phase 3: Data Source Connectors | In Progress | 50% |
+| Phase 3: Data Source Connectors | In Progress | 75% |
 | Phase 4: LLM Integration | Not Started | 0% |
 | Phase 5: CLI & Configuration | Not Started | 0% |
 | Phase 6: Testing & Documentation | Not Started | 0% |
@@ -67,7 +67,7 @@
 
 | Requirement | Plan | Status |
 |-------------|------|--------|
-| FR-1.1: DOCX 支持 | 03-03-PLAN.md | Pending |
+| FR-1.1: DOCX 支持 | 03-03-PLAN.md | Complete |
 | FR-1.2: 数据库支持 | 03-01-PLAN.md | Complete |
 | FR-1.3: REST API 支持 | 03-02-PLAN.md | Complete |
 
@@ -84,6 +84,11 @@
   - Bearer Token and API Key authentication
   - JSONPath data extraction
   - Commits: 6bb60fa, 24f5c92, d84fea8
+- 03-03-PLAN.md completed: DOCX document support
+  - Extended FileLoader with .docx format support
+  - Added python-docx>=1.1.0 dependency
+  - Implemented _load_docx() method with paragraph extraction
+  - Commits: bc33d00, 34c7c32
 
 ### Session 2026-05-12 (Phase 3 Planning)
 - Phase 3 planning completed
@@ -97,5 +102,4 @@
 
 ## Next Actions
 
-1. Execute 03-03-PLAN.md (DOCX 文档支持) - Wave 2
-2. After Wave 2: Execute 03-04-PLAN.md (数据源配置管理)
+1. Execute 03-04-PLAN.md (数据源配置管理和注册表) - Wave 3
