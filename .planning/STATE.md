@@ -17,7 +17,7 @@
 |-------|--------|----------|
 | Phase 1: Research & Design | Complete | 100% |
 | Phase 2: Core RAG Module | Complete | 100% |
-| Phase 3: Data Source Connectors | In Progress | 25% |
+| Phase 3: Data Source Connectors | In Progress | 50% |
 | Phase 4: LLM Integration | Not Started | 0% |
 | Phase 5: CLI & Configuration | Not Started | 0% |
 | Phase 6: Testing & Documentation | Not Started | 0% |
@@ -55,7 +55,7 @@
 
 **Wave 1 (并行执行):**
 - 03-01-PLAN.md: 数据库连接器 (BaseDatabaseConnector + SQLiteConnector) - **COMPLETE**
-- 03-02-PLAN.md: REST API 连接器 (APILoader)
+- 03-02-PLAN.md: REST API 连接器 (APILoader) - **COMPLETE**
 
 **Wave 2 (依赖 Wave 1):**
 - 03-03-PLAN.md: DOCX 文档支持 (扩展 FileLoader)
@@ -69,7 +69,7 @@
 |-------------|------|--------|
 | FR-1.1: DOCX 支持 | 03-03-PLAN.md | Pending |
 | FR-1.2: 数据库支持 | 03-01-PLAN.md | Complete |
-| FR-1.3: REST API 支持 | 03-02-PLAN.md | Pending |
+| FR-1.3: REST API 支持 | 03-02-PLAN.md | Complete |
 
 ## Session History
 
@@ -79,6 +79,11 @@
   - Implemented SQLiteConnector with sqlite3 standard library
   - Updated rag.loaders exports
   - Commits: e902c9b, c8df152
+- 03-02-PLAN.md completed: REST API connector implementation
+  - Created APILoader class with GET/POST support
+  - Bearer Token and API Key authentication
+  - JSONPath data extraction
+  - Commits: 6bb60fa, 24f5c92, d84fea8
 
 ### Session 2026-05-12 (Phase 3 Planning)
 - Phase 3 planning completed
@@ -92,6 +97,5 @@
 
 ## Next Actions
 
-1. Execute 03-02-PLAN.md (REST API 连接器) - Wave 1 parallel
-2. After Wave 1: Execute 03-03-PLAN.md (DOCX 文档支持)
-3. After Wave 1, 2: Execute 03-04-PLAN.md (数据源配置管理)
+1. Execute 03-03-PLAN.md (DOCX 文档支持) - Wave 2
+2. After Wave 2: Execute 03-04-PLAN.md (数据源配置管理)
