@@ -29,6 +29,7 @@ class SessionManager:
         if not hasattr(self, "initialized"):
             self.sessions: Dict[str, BaseAvatar] = {}
             self.build_session_fn = None
+            self.rag_modes: Dict[str, str] = {}  # sessionid -> "rag_only" | "rag_plus_model"
             self.initialized = True
 
     def init_builder(self, build_session_fn):
@@ -75,6 +76,22 @@ class SessionManager:
             logger.info(f"Removing session {sessionid}")
             # todo: 还可以主动调 avatar_session 释放
             self.sessions.pop(sessionid, None)
+
+    def set_rag_mode(self, sessionid: str, mode: str):
+        """设置 RAG 模式
+
+        Args:
+            sessionid: 会话 ID
+            mode: "rag_only" 或 "rag_plus_model"
+        """
+        if mode not in ("rag_only", "rag_plus_model"):
+            raise ValueError(f"Invalid RAG mode: {mode}")
+        self.rag_modes[sessionid] = mode
+        logger.info(f"RAG mode set to '{mode}' for session {sessionid}")
+
+    def get_rag_mode(self, sessionid: str) -> str:
+        """获取 RAG 模式，默认为 'rag_only'"""
+        return self.rag_modes.get(sessionid, "rag_only")
 
     async def shutdown_all(self):
         """关闭所有会话并清理资源"""
