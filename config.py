@@ -68,6 +68,8 @@ def parse_args():
                         help="chromadb persistence directory")
     parser.add_argument('--rag_collection', type=str, default="knowledge_base",
                         help="chromadb collection name")
+    parser.add_argument('--rag_config', type=str, default="data/rag_config.yaml",
+                        help="RAG configuration file path (YAML)")
 
     opt = parser.parse_args()
 
@@ -76,5 +78,38 @@ def parse_args():
     if opt.customvideo_config:
         with open(opt.customvideo_config, 'r') as f:
             opt.customopt = json.load(f)
+
+    # ─── RAG 配置合并 ────────────────────────────────────────────────────────
+    try:
+        from rag import load_rag_config, load_rag_config_from_env, merge_rag_config
+        import sys
+
+        # 加载配置文件
+        file_config = load_rag_config(opt.rag_config)
+
+        # 加载环境变量
+        env_config = load_rag_config_from_env()
+
+        # CLI 配置（只包含用户显式设置的值）
+        cli_config = {}
+        if "--rag_enabled" in sys.argv:
+            cli_config["enabled"] = True
+        if opt.rag_top_k != 3:
+            cli_config["top_k"] = opt.rag_top_k
+        if opt.rag_persist_dir != "./data/chromadb":
+            cli_config["persist_dir"] = opt.rag_persist_dir
+        if opt.rag_collection != "knowledge_base":
+            cli_config["collection"] = opt.rag_collection
+
+        # 合并配置
+        merged = merge_rag_config(cli_config, env_config, file_config)
+
+        # 应用合并后的配置
+        opt.rag_enabled = merged.get("enabled", False)
+        opt.rag_top_k = merged.get("top_k", 3)
+        opt.rag_persist_dir = merged.get("persist_dir", "./data/chromadb")
+        opt.rag_collection = merged.get("collection", "knowledge_base")
+    except ImportError:
+        pass  # RAG module not available, use CLI defaults
 
     return opt

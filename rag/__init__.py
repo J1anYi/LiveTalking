@@ -19,6 +19,7 @@ from .retriever import RAGRetriever
 from .loaders import FileLoader, APILoader
 from .loaders import BaseDatabaseConnector, SQLiteConnector
 from .sources import SourceConfig, SourceRegistry, load_sources_config
+from .config_loader import load_rag_config, save_rag_config, get_default_rag_config, load_rag_config_from_env, merge_rag_config
 
 
 @runtime_checkable
@@ -48,6 +49,7 @@ __all__ = [
     "SourceConfig", "SourceRegistry", "load_sources_config",
     "EmbeddingClient", "VectorStoreProtocol", "DocumentLoader",
     "build_rag_prompt", "quick_retrieve", "get_default_config",
+    "load_rag_config", "save_rag_config", "get_default_rag_config", "load_rag_config_from_env", "merge_rag_config",
 ]
 
 
