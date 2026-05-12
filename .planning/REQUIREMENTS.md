@@ -39,9 +39,9 @@
 
 ### Graceful Exit（优雅退出）
 
-- [ ] **EXIT-01**: 用户按 Ctrl+C 后，服务应在 5 秒内完全退出，释放 8010 端口
-- [ ] **EXIT-02**: 退出时所有后台线程（avatar session、output 模块）应正确停止
-- [ ] **EXIT-03**: 退出时应清理所有资源（WebRTC 连接、临时文件等）
+- [x] **EXIT-01**: 用户按 Ctrl+C 后，服务应在 5 秒内完全退出，释放 8010 端口
+- [x] **EXIT-02**: 退出时所有后台线程（avatar session、output 模块）应正确停止
+- [x] **EXIT-03**: 退出时应清理所有资源（WebRTC 连接、临时文件等）
 
 ### RAG Mode Toggle（RAG 模式切换）
 
@@ -65,9 +65,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EXIT-01 | Phase 7 | Pending |
-| EXIT-02 | Phase 7 | Pending |
-| EXIT-03 | Phase 7 | Pending |
+| EXIT-01 | Phase 7 | Completed |
+| EXIT-02 | Phase 7 | Completed |
+| EXIT-03 | Phase 7 | Completed |
 | RAG-01 | Phase 8 | Pending |
 | RAG-02 | Phase 8 | Pending |
 | RAG-03 | Phase 8 | Pending |
@@ -78,6 +78,7 @@
 - v1.1 requirements: 8 total
 - Mapped to phases: 8
 - Unmapped: 0 ✓
+- Completed: 3 (EXIT-01, EXIT-02, EXIT-03)
 
 ---
 *Requirements defined: 2026-05-12*
