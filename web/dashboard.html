@@ -342,6 +342,17 @@
                                             <input class="form-check-input" type="checkbox" id="use-stun">
                                             <label class="form-check-label" for="use-stun">使用STUN服务器</label>
                                         </div>
+                                        <!-- RAG 模式切换 -->
+                                        <div class="mb-3">
+                                            <label class="form-label">RAG 知识库模式</label>
+                                            <div class="btn-group w-100" role="group">
+                                                <input type="radio" class="btn-check" name="rag-mode" id="rag-only" value="rag_only" checked>
+                                                <label class="btn btn-outline-primary" for="rag-only">仅知识库</label>
+                                                <input type="radio" class="btn-check" name="rag-mode" id="rag-plus-model" value="rag_plus_model">
+                                                <label class="btn btn-outline-primary" for="rag-plus-model">知识库+模型</label>
+                                            </div>
+                                            <small class="text-muted">仅知识库：只回答知识库内容 | 知识库+模型：结合知识库和模型自身知识</small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -572,6 +583,31 @@
                 $('#message').val('');
                 addChatMessage(`已发送朗读请求: "${message}"`, 'system');
             });
+
+            // RAG 模式切换
+            $('input[name="rag-mode"]').change(function() {
+                const mode = $(this).val();
+                const sessionid = document.getElementById('sessionid').value;
+
+                fetch('/set_rag_mode', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({sessionid: sessionid, mode: mode})
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.code === 0) {
+                        console.log('RAG mode set to:', mode);
+                        // 保存到 localStorage
+                        localStorage.setItem('rag_mode', mode);
+                    }
+                });
+            });
+
+            // 页面加载时恢复 RAG 模式
+            const savedRagMode = localStorage.getItem('rag_mode');
+            if (savedRagMode) {
+                $(`input[name="rag-mode"][value="${savedRagMode}"]`).prop('checked', true);
+            }
 
             // 聊天模式表单提交
             $('#chat-form').on('submit', function(e) {
