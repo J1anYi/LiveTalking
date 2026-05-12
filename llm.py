@@ -4,10 +4,19 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from avatars.base_avatar import BaseAvatar
 from utils.logger import logger
+from rag import build_rag_prompt
+
+# RAG integration (set by app.py during initialization)
+rag_retriever = None
 
 def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
     try:
         opt = avatar_session.opt
+
+        # Initialize conversation history if not exists
+        if not hasattr(avatar_session, '_llm_history'):
+            avatar_session._llm_history = []
+
         start = time.perf_counter()
         from openai import OpenAI
         client = OpenAI(
@@ -18,10 +27,31 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
         )
         end = time.perf_counter()
         logger.info(f"llm Time init: {end-start}s,{message}")
+
+        # RAG retrieval for chat mode (enhanced prompt)
+        enhanced_message = message
+        if rag_retriever and getattr(opt, 'rag_enabled', False):
+            try:
+                # Build retrieval query with conversation context
+                retrieval_query = message
+                if avatar_session._llm_history:
+                    # Include last 2 turns for context
+                    context_msgs = avatar_session._llm_history[-4:]
+                    retrieval_query = " ".join([m["content"] for m in context_msgs]) + " " + message
+
+                # Retrieve relevant documents
+                retrieved = rag_retriever.retrieve(retrieval_query)
+
+                if retrieved:
+                    enhanced_message = build_rag_prompt(message, retrieved)
+                    logger.info(f"RAG retrieved {len(retrieved)} documents for query")
+            except Exception as e:
+                logger.warning(f"RAG retrieval failed, using original message: {e}")
+
         completion = client.chat.completions.create(
             model="qwen-plus",
             messages=[{'role': 'system', 'content': '你是一个知识助手，尽量以简短、口语化的方式输出'},
-                    {'role': 'user', 'content': message}],
+                    {'role': 'user', 'content': enhanced_message}],
             stream=True,
             # 通过以下设置，在流式输出的最后一行展示token使用信息
             stream_options={"include_usage": True}
@@ -53,6 +83,9 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
         logger.info(f"llm Time to last chunk: {end-start}s")
         if result:
             avatar_session.put_msg_txt(result,datainfo)
+
+        # Update conversation history
+        avatar_session._llm_history.append({'role': 'user', 'content': message})
         
     except Exception as e:
         logger.exception('llm exceptiopn:')

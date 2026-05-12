@@ -119,6 +119,9 @@ def main():
             _rag_store = VectorStore(persist_dir=opt.rag_persist_dir, collection_name=opt.rag_collection)
             rag_retriever = RAGRetriever(_rag_store, _rag_embedding, top_k=opt.rag_top_k)
             logger.info(f"RAG retriever initialized: {opt.rag_persist_dir}, top_k={opt.rag_top_k}, docs={rag_retriever.count()}")
+            # Share retriever with llm module
+            import llm
+            llm.rag_retriever = rag_retriever
         except Exception as e:
             logger.warning(f"Failed to initialize RAG retriever, RAG disabled: {e}")
             rag_retriever = None
