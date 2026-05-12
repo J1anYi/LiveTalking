@@ -37,6 +37,7 @@ from aiortc.rtcrtpsender import RTCRtpSender
 from server.webrtc import HumanPlayer
 from avatars.base_avatar import BaseAvatar
 from llm import llm_response
+from rag import RAGRetriever, DashScopeEmbedding, VectorStore
 import registry
 from server.routes import setup_routes
 from server.rtc_manager import RTCManager
@@ -59,6 +60,7 @@ app = Flask(__name__)
 opt = None
 model = None
 global_avatars = {} # avatar_id: payload
+rag_retriever = None  # Global RAG retriever instance
         
 
 #####webrtc###############################
@@ -105,10 +107,21 @@ async def on_shutdown(app):
 
 
 def main():
-    global rtc_manager, opt, model,load_avatar
+    global rtc_manager, opt, model, load_avatar, rag_retriever
     # 解析命令行参数
     from config import parse_args
     opt = parse_args()
+
+    # Initialize RAG retriever if enabled
+    if opt.rag_enabled:
+        try:
+            _rag_embedding = DashScopeEmbedding()
+            _rag_store = VectorStore(persist_dir=opt.rag_persist_dir, collection_name=opt.rag_collection)
+            rag_retriever = RAGRetriever(_rag_store, _rag_embedding, top_k=opt.rag_top_k)
+            logger.info(f"RAG retriever initialized: {opt.rag_persist_dir}, top_k={opt.rag_top_k}, docs={rag_retriever.count()}")
+        except Exception as e:
+            logger.warning(f"Failed to initialize RAG retriever, RAG disabled: {e}")
+            rag_retriever = None
 
     # ─── 加载 avatar 插件（触发 @register 注册）──────────────────────
     _avatar_modules = {
