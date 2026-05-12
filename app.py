@@ -47,6 +47,7 @@ import argparse
 import random
 import shutil
 import asyncio
+import signal
 import torch
 from io import BytesIO
 from typing import Dict
@@ -197,6 +198,22 @@ def main():
     def run_server(runner):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+
+        # 信号处理器 - 用于优雅退出
+        shutdown_event = asyncio.Event()
+
+        def signal_handler():
+            logger.info("Received shutdown signal, cleaning up...")
+            shutdown_event.set()
+
+        # 注册信号处理器
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            try:
+                loop.add_signal_handler(sig, signal_handler)
+            except NotImplementedError:
+                # Windows 不支持 add_signal_handler，使用替代方案
+                signal.signal(sig, lambda s, f: signal_handler())
+
         loop.run_until_complete(runner.setup())
         site = web.TCPSite(runner, '0.0.0.0', opt.listenport)
         loop.run_until_complete(site.start())
@@ -206,7 +223,18 @@ def main():
                 if k!=0:
                     push_url = opt.push_url+str(k)
                 loop.run_until_complete(rtc_manager.handle_rtcpush(push_url, str(k)))
-        loop.run_forever()    
+
+        # 等待关闭信号（Windows 使用不同的机制）
+        if hasattr(signal, 'SIGINT'):
+            # Unix: 使用 run_until_complete 等待 shutdown_event
+            loop.run_until_complete(shutdown_event.wait())
+            # 执行清理
+            logger.info("Shutting down server...")
+            loop.run_until_complete(on_shutdown(appasync))
+            loop.stop()
+        else:
+            # Fallback: run_forever
+            loop.run_forever()    
     #Thread(target=run_server, args=(web.AppRunner(appasync),)).start()
     run_server(web.AppRunner(appasync))
 
