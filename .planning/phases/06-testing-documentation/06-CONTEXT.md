@@ -51,7 +51,7 @@
   - **Why:** 验证真实 API 调用的兼容性，发现 mock 无法覆盖的问题
   - **How to apply:** 设置 DASHSCOPE_API_KEY 环境变量运行集成测试
 - **D-04:** API 配置
-  - API Key: `sk-a3451ca04a30450a97c5da171f6be961`
+  - API Key: `sk-xxx`
   - Base URL: `https://dashscope.aliyuncs.com/compatible-mode/v1`
 - **D-05:** 端到端测试覆盖三个场景
   - RAG 全流程测试：文档加载 → 分块 → Embedding → 存储 → 检索

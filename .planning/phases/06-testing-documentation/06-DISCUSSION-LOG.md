@@ -31,7 +31,7 @@
 | 可选真实 API 测试 | 使用 pytest marker 区分，如 @pytest.mark.integration，可选择性运行 | |
 
 **User's choice:** 部分真实 API
-**Notes:** API Key: sk-a3451ca04a30450a97c5da171f6be961, Base URL: https://dashscope.aliyuncs.com/compatible-mode/v1
+**Notes:** API Key: sk-xxx, Base URL: https://dashscope.aliyuncs.com/compatible-mode/v1
 
 ---
 

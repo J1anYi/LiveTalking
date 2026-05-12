@@ -20,10 +20,8 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
         start = time.perf_counter()
         from openai import OpenAI
         client = OpenAI(
-            # 如果您没有配置环境变量，请在此处用您的API Key进行替换
-            api_key=os.getenv("DASHSCOPE_API_KEY"),
-            # 填写DashScope SDK的base_url
-            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+            api_key=os.getenv("OPENAI_API_KEY", "my-secret-key"),
+            base_url=os.getenv("OPENAI_BASE_URL", "http://localhost:8317/v1"),
         )
         end = time.perf_counter()
         logger.info(f"llm Time init: {end-start}s,{message}")
@@ -49,7 +47,7 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
                 logger.warning(f"RAG retrieval failed, using original message: {e}")
 
         completion = client.chat.completions.create(
-            model="qwen-plus",
+            model=os.getenv("OPENAI_MODEL", "GLM-5"),
             messages=[{'role': 'system', 'content': '你是一个知识助手，尽量以简短、口语化的方式输出'},
                     {'role': 'user', 'content': enhanced_message}],
             stream=True,
