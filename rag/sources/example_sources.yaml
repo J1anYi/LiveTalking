@@ -1,0 +1,92 @@
+# Data Sources Configuration for LiveTalking RAG Knowledge Base
+#
+# This file defines multiple data sources for the RAG module.
+# Each source can be enabled/disabled and has type-specific configuration.
+#
+# Environment variables can be used with ${VAR_NAME} syntax.
+# For example: token: ${API_TOKEN}
+
+sources:
+  # ===================
+  # Local File Sources
+  # ===================
+  - name: local_docs
+    type: file
+    enabled: true
+    config:
+      # Directory path containing documents
+      path: ./data/knowledge
+      # Supported file extensions
+      extensions: [".txt", ".md", ".pdf", ".docx"]
+      # Search directories recursively
+      recursive: true
+      # File encoding for text files
+      encoding: utf-8
+
+  # ======================
+  # Database Sources
+  # ======================
+  - name: product_db
+    type: sqlite
+    enabled: true
+    config:
+      # Path to SQLite database file
+      connection_string: ./data/products.db
+      # SQL query to extract knowledge
+      query: "SELECT id, name, description, category FROM products WHERE active = 1"
+      # Columns to include in document content (optional, defaults to all)
+      content_columns: ["name", "description"]
+      # Columns to include in metadata (optional)
+      metadata_columns: ["id", "category"]
+
+  # Example: Disabled database source
+  - name: legacy_db
+    type: sqlite
+    enabled: false  # Disabled - will not be loaded
+    config:
+      connection_string: ./data/legacy.db
+      query: "SELECT * FROM old_knowledge"
+
+  # ======================
+  # REST API Sources
+  # ======================
+  - name: knowledge_api
+    type: api
+    enabled: false  # Enable when API is available
+    config:
+      # API endpoint URL
+      url: https://api.example.com/knowledge
+      # HTTP method (GET or POST)
+      method: GET
+      # Optional custom headers
+      headers:
+        Accept: application/json
+      # Bearer token authentication (use env var for security)
+      auth:
+        type: bearer
+        token: ${KNOWLEDGE_API_TOKEN}
+      # JSONPath to extract data from response (optional)
+      data_path: $.data.items
+      # Request timeout in seconds
+      timeout: 30
+
+  # Example: API with API Key authentication
+  - name: external_service
+    type: api
+    enabled: false
+    config:
+      url: https://external.example.com/v1/documents
+      method: POST
+      headers:
+        Content-Type: application/json
+      # POST request body
+      body:
+        query: "knowledge"
+        limit: 100
+      # API Key authentication
+      auth:
+        type: api_key
+        key: ${EXTERNAL_API_KEY}
+        header: X-API-Key
+      # Extract documents from nested response
+      data_path: $.results.documents
