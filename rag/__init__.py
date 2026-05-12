@@ -18,6 +18,7 @@ from .document_processor import DocumentProcessor
 from .retriever import RAGRetriever
 from .loaders import FileLoader, APILoader
 from .loaders import BaseDatabaseConnector, SQLiteConnector
+from .sources import SourceConfig, SourceRegistry, load_sources_config
 
 
 @runtime_checkable
@@ -44,6 +45,7 @@ class DocumentLoader(Protocol):
 __all__ = [
     "DashScopeEmbedding", "VectorStore", "DocumentProcessor", "RAGRetriever",
     "FileLoader", "APILoader", "BaseDatabaseConnector", "SQLiteConnector",
+    "SourceConfig", "SourceRegistry", "load_sources_config",
     "EmbeddingClient", "VectorStoreProtocol", "DocumentLoader",
     "build_rag_prompt", "quick_retrieve", "get_default_config",
 ]
