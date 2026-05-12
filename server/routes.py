@@ -150,6 +150,35 @@ async def is_speaking(request):
     return json_ok(data=avatar_session.is_speaking())
 
 
+async def set_rag_mode(request):
+    """设置 RAG 模式"""
+    try:
+        params = await request.json()
+        sessionid = params.get('sessionid', '')
+        mode = params.get('mode', 'rag_only')
+
+        if mode not in ('rag_only', 'rag_plus_model'):
+            return json_error(f"Invalid mode: {mode}. Must be 'rag_only' or 'rag_plus_model'")
+
+        session_manager.set_rag_mode(sessionid, mode)
+        return json_ok(data={"mode": mode})
+    except Exception as e:
+        logger.exception('set_rag_mode exception:')
+        return json_error(str(e))
+
+
+async def get_rag_mode(request):
+    """获取当前 RAG 模式"""
+    try:
+        params = await request.json()
+        sessionid = params.get('sessionid', '')
+        mode = session_manager.get_rag_mode(sessionid)
+        return json_ok(data={"mode": mode})
+    except Exception as e:
+        logger.exception('get_rag_mode exception:')
+        return json_error(str(e))
+
+
 # ─── 路由注册 ──────────────────────────────────────────────────────────────
 
 def setup_routes(app):
@@ -160,4 +189,6 @@ def setup_routes(app):
     app.router.add_post("/record", record)
     app.router.add_post("/interrupt_talk", interrupt_talk)
     app.router.add_post("/is_speaking", is_speaking)
+    app.router.add_post("/set_rag_mode", set_rag_mode)
+    app.router.add_post("/get_rag_mode", get_rag_mode)
     app.router.add_static('/', path='web')
