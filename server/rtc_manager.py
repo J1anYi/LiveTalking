@@ -132,7 +132,12 @@ class RTCManager:
         )
 
     async def shutdown(self):
-        """关闭所有 PeerConnection"""
+        """关闭所有 PeerConnection 和 Sessions"""
+        logger.info("Closing all PeerConnections...")
         coros = [pc.close() for pc in self.pcs]
-        await asyncio.gather(*coros)
+        await asyncio.gather(*coros, return_exceptions=True)
         self.pcs.clear()
+
+        # 关闭所有 avatar sessions
+        await session_manager.shutdown_all()
+        logger.info("RTCManager shutdown complete")
