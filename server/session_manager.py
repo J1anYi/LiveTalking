@@ -76,5 +76,15 @@ class SessionManager:
             # todo: 还可以主动调 avatar_session 释放
             self.sessions.pop(sessionid, None)
 
+    async def shutdown_all(self):
+        """关闭所有会话并清理资源"""
+        logger.info(f"Shutting down {len(self.sessions)} sessions...")
+        for sessionid, avatar_session in list(self.sessions.items()):
+            if avatar_session and hasattr(avatar_session, 'stop'):
+                avatar_session.stop()
+            self.sessions.pop(sessionid, None)
+        logger.info("All sessions shutdown complete")
+
+
 # 单例抛出
 session_manager = SessionManager()

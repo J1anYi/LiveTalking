@@ -192,6 +192,12 @@ class BaseAvatar:
 
     def is_speaking(self) -> bool:
         return self.speaking
+
+    def stop(self):
+        """停止所有后台线程"""
+        if hasattr(self, 'quit_event'):
+            self.quit_event.set()
+        logger.info(f"Avatar session {self.sessionid} stopped")
     
     def __loadcustom(self):
         if not hasattr(self.opt, 'customopt') or not self.opt.customopt:
@@ -470,8 +476,12 @@ class BaseAvatar:
         logger.info('baseavatar render thread stop')
 
         infer_quit_event.set()
-        infer_thread.join()
+        infer_thread.join(timeout=5.0)
+        if infer_thread.is_alive():
+            logger.warning("inference thread did not stop in time")
 
         process_quit_event.set()
-        process_thread.join()
+        process_thread.join(timeout=5.0)
+        if process_thread.is_alive():
+            logger.warning("process_frames thread did not stop in time")
 
