@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from avatars.base_avatar import BaseAvatar
 from utils.logger import logger
 from rag import build_rag_prompt
+from server.session_manager import session_manager
 
 # RAG integration (set by app.py during initialization)
 rag_retriever = None
@@ -28,6 +29,8 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
 
         # RAG retrieval for chat mode (enhanced prompt)
         enhanced_message = message
+        rag_mode = session_manager.get_rag_mode(avatar_session.sessionid)
+
         if rag_retriever and getattr(opt, 'rag_enabled', False):
             try:
                 # Build retrieval query with conversation context
@@ -41,8 +44,18 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
                 retrieved = rag_retriever.retrieve(retrieval_query)
 
                 if retrieved:
-                    enhanced_message = build_rag_prompt(message, retrieved)
-                    logger.info(f"RAG retrieved {len(retrieved)} documents for query")
+                    if rag_mode == "rag_only":
+                        # 原有模式：只使用 RAG 内容
+                        enhanced_message = build_rag_prompt(message, retrieved)
+                    else:
+                        # RAG+Model 模式：将 RAG 内容作为参考信息
+                        context_parts = []
+                        for chunk in retrieved[:3]:  # 最多使用 3 个文档
+                            text = chunk.get("text", "")
+                            context_parts.append(f"- {text}")
+                        context = "\n".join(context_parts)
+                        enhanced_message = f"参考信息:\n{context}\n\n用户问题: {message}\n\n请结合参考信息和你的知识回答问题:"
+                    logger.info(f"RAG retrieved {len(retrieved)} documents, mode={rag_mode}")
             except Exception as e:
                 logger.warning(f"RAG retrieval failed, using original message: {e}")
 
