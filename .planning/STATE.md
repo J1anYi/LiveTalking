@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: RAG Knowledge Base
-status: shipped
-last_updated: "2026-05-12T16:00:00.000Z"
+milestone: v1.1
+milestone_name: Bug Fixes & UX Enhancement
+status: planning
+last_updated: "2026-05-12T17:00:00.000Z"
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 26
-  completed_plans: 26
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
-# State: LiveTalking RAG Knowledge Base
+# State: LiveTalking v1.1 Bug Fixes & UX Enhancement
 
 **Last Updated**: 2026-05-12
 
@@ -20,28 +20,24 @@ progress:
 
 | Attribute | Value |
 |-----------|-------|
-| Status | Shipped |
-| Current Milestone | v1.0 RAG Knowledge Base |
-| Progress | 100% |
+| Status | Planning |
+| Current Milestone | v1.1 Bug Fixes & UX Enhancement |
+| Progress | 0% |
 
-## Milestone Summary
+## Current Position
 
-**v1.0 RAG Knowledge Base** shipped on 2026-05-12.
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-12 — Milestone v1.1 started
 
-Key accomplishments:
-- 核心模块: VectorStore, DashScopeEmbedding, DocumentProcessor, RAGRetriever
-- 数据源连接器: FileLoader, SQLiteConnector, APILoader
-- LLM 集成: Chat 模式自动注入知识库上下文
-- 配置系统: CLI + 环境变量 + YAML
-- 测试: 39 个新测试用例
-- 文档: 完整用户文档
+## Milestone Goals
 
-## Archive
+1. **优雅退出**: 修复 Ctrl+C 后进程无法正常退出的问题
+2. **RAG 模式切换**: Dashboard 添加按钮支持 RAG-only / RAG+模型知识 切换
+
+## Previous Milestone Archive
 
 - `.planning/milestones/v1.0-ROADMAP.md`
 - `.planning/milestones/v1.0-REQUIREMENTS.md`
 - `.planning/MILESTONES.md`
-
-## Next Steps
-
-Run `/gsd-new-milestone` to start next milestone planning.
