@@ -1,0 +1,22 @@
+{
+  "project_name": "LiveTalking RAG Knowledge Base",
+  "project_type": "brownfield",
+  "created_at": "2026-05-11",
+  "workflow_preferences": {
+    "auto_approve_simple_edits": true,
+    "require_plan_approval": true,
+    "commit_after_each_phase": true,
+    "default_model": "sonnet"
+  },
+  "tech_stack": {
+    "language": "Python 3.10+",
+    "framework": "aiohttp + Flask",
+    "ai_models": ["Qwen (DashScope)", "Wav2Lip", "MuseTalk"],
+    "vector_db": "TBD (ChromaDB/FAISS)"
+  },
+  "integration_scope": {
+    "rag_type": "vector_retrieval",
+    "data_sources": ["local_documents", "database", "api_services"],
+    "integration_method": "extend_llm_module"
+  }
+}
