@@ -1,0 +1,29 @@
+# RAG Knowledge Base Configuration
+#
+# This file configures the RAG (Retrieval Augmented Generation) knowledge base
+# for the LiveTalking digital human system.
+#
+# Configuration priority: CLI arguments > Environment variables > This file
+#
+# Environment variables (override this file):
+#   RAG_ENABLED: "true" or "false"
+#   RAG_TOP_K: Number of documents to retrieve (integer)
+#   RAG_PERSIST_DIR: ChromaDB persistence directory path
+#   RAG_COLLECTION: ChromaDB collection name
+
+rag:
+  # Enable or disable RAG knowledge base retrieval
+  # When enabled, the LLM will retrieve relevant knowledge before responding
+  enabled: false
+
+  # Number of documents to retrieve for each query
+  # Higher values provide more context but may slow down responses
+  top_k: 3
+
+  # ChromaDB persistence directory
+  # This is where the vector embeddings are stored
+  persist_dir: ./data/chromadb
+
+  # ChromaDB collection name
+  # Use different collections for different knowledge domains
+  collection: knowledge_base
