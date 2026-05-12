@@ -69,9 +69,9 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
         )
         result=""
         first = True
+        chunk_count = 0
         for chunk in completion:
             if len(chunk.choices)>0:
-                #print(chunk.choices[0].delta.content)
                 if first:
                     end = time.perf_counter()
                     logger.info(f"llm Time to first chunk: {end-start}s")
@@ -79,20 +79,21 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
                 msg = chunk.choices[0].delta.content
                 if msg is None:
                     continue
+                chunk_count += 1
                 lastpos=0
-                #msglist = re.split('[,.!;:，。！?]',msg)
                 for i, char in enumerate(msg):
-                    if char in ",.!;:，。！？：；" :
+                    if char in ",.!;:，。！？：；\n" :
                         result = result+msg[lastpos:i+1]
                         lastpos = i+1
-                        if len(result)>10:
-                            logger.info(result)
+                        if len(result)>5:  # 降低阈值，更快发送
+                            logger.info(f"LLM segment: {result[:50]}...")
                             avatar_session.put_msg_txt(result,datainfo)
                             result=""
                 result = result+msg[lastpos:]
         end = time.perf_counter()
-        logger.info(f"llm Time to last chunk: {end-start}s")
+        logger.info(f"llm Time to last chunk: {end-start}s, total chunks: {chunk_count}")
         if result:
+            logger.info(f"LLM final segment: {result[:50]}...")
             avatar_session.put_msg_txt(result,datainfo)
 
         # Update conversation history
