@@ -56,3 +56,21 @@
 **Archive:** `.planning/reports/MILESTONE_SUMMARY-v1.2.md`
 
 ---
+
+## v1.3 — Frontend Redesign
+
+**Shipped:** 2026-05-12
+**Phases:** 1 | **Plans:** 1
+
+**Delivered:** 数字人前端界面全面重构，清新浅色设计，布局融合优化。
+
+**Key accomplishments:**
+- ✅ 全新配色方案（暖白/柔和紫，替代原有蓝色调）
+- ✅ 视频 + 对话一体化布局（统一卡片风格）
+- ✅ RAG 模式切换移至顶栏
+- ✅ 对话框扩大 + 气泡重新设计
+- ✅ 响应式适配 + 动效优化
+
+---
+
+---

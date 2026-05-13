@@ -83,11 +83,20 @@
 - [x] **UI-03**: 时间戳显示（同天 HH:MM，跨天 月/日 时:分）
 - [x] **UI-04**: 前端发送按钮 debounce，防止重复提交
 
+## v1.3 Requirements
+
+### 前端重构 (UI)
+
+- [ ] **UI-05**: 新配色方案（暖白 `#f5f0eb` 背景 + 柔和紫 `#8B8CF8` 点缀，替代 `#4361ee` 蓝色调）
+- [ ] **UI-06**: 视频+对话一体化布局（统一圆角白色卡片 `max-w-7xl` 居中，视觉融合）
+- [ ] **UI-07**: RAG 模式切换移至顶部或对话框上方，触手可及
+- [ ] **UI-08**: 对话框扩大至 6/12 分栏，气泡更大、间距更舒适
+- [ ] **UI-09**: 响应式适配（桌面/平板），过渡动效平滑
+
 ## v2 Requirements
 
 Deferred to future milestone.
 
-- **SSE 流式文字推送**：已在 v1.2 CHAT-01 中覆盖
 - **音频波形可视化**：数字人说话时气泡旁显示电平条
 - **多模态消息**：用户可发送图片，数字人回复含视觉理解
 - **会话导出**：导出 JSON/Markdown/TXT
@@ -126,10 +135,15 @@ Deferred to future milestone.
 | UI-02 | Phase 9 | Complete |
 | UI-03 | Phase 9 | Complete |
 | UI-04 | Phase 10 | Complete |
+| UI-05 | Phase 13 | Pending |
+| UI-06 | Phase 13 | Pending |
+| UI-07 | Phase 13 | Pending |
+| UI-08 | Phase 13 | Pending |
+| UI-09 | Phase 13 | Pending |
 
 **Coverage:**
-- v1.2 requirements: 19 total
-- Mapped to phases: 19
+- v1.3 requirements: 5 total
+- Mapped to phases: 5
 - Unmapped: 0 ✓
 
 ---

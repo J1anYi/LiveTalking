@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: Chat UI & History
-status: completed
-last_updated: "2026-05-12T21:00:00.000Z"
+milestone: v1.3
+milestone_name: Frontend Redesign
+status: defining
+last_updated: "2026-05-12T22:00:00.000Z"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 4
-  completed_plans: 4
-  percent: 100
+  total_phases: 1
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
-# State: LiveTalking v1.2 Chat UI & History
+# State: LiveTalking v1.3 Frontend Redesign
 
 **Last Updated**: 2026-05-12
 
@@ -20,23 +20,23 @@ progress:
 
 | Attribute | Value |
 |-----------|-------|
-| Status | Completed |
-| Current Milestone | v1.2 Chat UI & History |
-| Progress | 100% |
+| Status | Defining requirements |
+| Current Milestone | v1.3 Frontend Redesign |
+| Progress | 0% |
 
 ## Current Position
 
-Phase: 12-polish-edge-cases (Completed)
-Plan: 12-01 (Completed)
-Status: All v1.2 phases completed
-Last activity: 2026-05-12 — Milestone v1.2 completed
+Phase: 13-frontend-redesign (Defining)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-12 — Milestone v1.3 started
 
 ## Milestone Goals
 
-1. **聊天界面**: ✅ SSE 流式文字推送 + 消息气泡 UI + Alpine.js
-2. **历史记录**: ✅ SQLite 持久化存储 + History API
-3. **会话管理**: ✅ 侧边栏 + 新建/切换/删除
-4. **前端框架**: ✅ Alpine.js + marked.js + Markdown 渲染
+1. **新配色方案**: 暖白基底 + 柔和紫点缀，替代蓝色调
+2. **一体化布局**: 视频 + 对话统一卡片风格，视觉融合
+3. **RAG 顶栏集成**: RAG 模式切换移至对话框上方
+4. **对话框扩大**: 高度翻倍，气泡间距舒适
 
 ## Previous Milestone Archive
 
