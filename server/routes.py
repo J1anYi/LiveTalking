@@ -206,8 +206,10 @@ async def sse_chat(request):
             if data.get("type") == "done" or data.get("type") == "error":
                 break
     except asyncio.TimeoutError:
-        await response.write(b"data: {\"type\":\"timeout\"}\n\n")
-    except (ConnectionResetError, ConnectionAbortedError):
+        pass  # 客户端断开或 30s 无数据，静默退出
+    except (ConnectionResetError, ConnectionAbortedError, ConnectionError):
+        pass
+    except Exception:
         pass
     finally:
         sse.unsubscribe(sessionid, q)
