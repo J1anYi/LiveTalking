@@ -268,7 +268,25 @@
         }
     </style>
 
-        .video-container {
+</head><｜end▁of▁thinking｜>
+
+<｜｜DSML｜｜tool_calls>
+<｜｜DSML｜｜invoke name="bash">
+<｜｜DSML｜｜parameter name="command" string="true">python -c "
+f=open('web/dashboard.html','r',encoding='utf-8');c=f.read();f.close()
+# Check for old CSS selectors
+for s in ['.video-container','.controls-container','.btn-primary','.asr-container','.status-indicator','.nav-tabs']:
+    if s in c:
+        idx = c.index(s)
+        print(f'FOUND {s} at position {idx}')
+        # Check if it's in a style tag or raw
+        before = c[max(0,idx-500):idx]
+        if '</style>' in before and '<style' not in before.split('</style>')[-1]:
+            print(f'  -> RAW CSS (outside style tag)!')
+        else:
+            print(f'  -> Inside style tag or other context')
+print('Check complete')
+" 2>&1
             position: relative;
             width: 100%;
             background-color: #000;
