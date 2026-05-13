@@ -157,51 +157,8 @@
 | 10. SQLite History | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
 | 11. Session Management | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
 | 12. Polish & Edge Cases | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
-| 13. Frontend Redesign | v1.3 | 0/1 | 🔲 Planned | — |
+| 13. Frontend Redesign | v1.3 | 1/1 | 🔲 Planned | — |
 
-**Total Progress: 100% (26/26 plans)**
-
----
-
-## v1.3 Frontend Redesign
-
-### Phase 13: Frontend Redesign
-
-**Goal:** 数字人前端界面全面重构 — 新配色、新布局、一体化设计
-
-**Requirements:** UI-05, UI-06, UI-07, UI-08, UI-09
-
-**Status:** 🔲 Planned
-
-**Success Criteria:**
-1. 页面主色调切换为暖白 + 柔和紫方案，不再使用 `#4361ee`
-2. 视频区域和对话框使用统一圆角卡片包裹，视觉上融合
-3. RAG 模式切换移至顶部导航栏或对话框上方，触手可及
-4. 对话框高度翻倍，气泡间距舒适，消息展示更多
-5. 响应式适配（桌面/平板），动效过渡平滑
-
----
-
-## Progress
-
-| Phase | Milestone | Plans | Status | Completed |
-|-------|-----------|-------|--------|-----------|
-| 1. Research & Design | v1.0 | 2/2 | Complete | 2026-05-11 |
-| 2. Core RAG Module | v1.0 | 1/1 | Complete | 2026-05-11 |
-| 3. Data Source Connectors | v1.0 | 4/4 | Complete | 2026-05-12 |
-| 4. LLM Integration | v1.0 | 3/3 | Complete | 2026-05-12 |
-| 5. CLI & Configuration | v1.0 | 5/5 | Complete | 2026-05-12 |
-| 6. Testing & Documentation | v1.0 | 5/5 | Complete | 2026-05-12 |
-| 7. Graceful Exit | v1.1 | 1/1 | Complete | 2026-05-12 |
-| 8. RAG Mode Toggle | v1.1 | 1/1 | Complete | 2026-05-12 |
-| 9. Chat UX Core | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
-| 10. SQLite History | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
-| 11. Session Management | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
-| 12. Polish & Edge Cases | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
-| 13. Frontend Redesign | v1.3 | 0/1 | 🔲 Planned | — |
-
-**Total Progress: 100% (26/26 plans)**
-
----
+**Total Progress: 100% (27/27 plans)**
 
 _Archive: `.planning/milestones/v1.0-ROADMAP.md`_
