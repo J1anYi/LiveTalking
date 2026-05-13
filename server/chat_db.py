@@ -1,7 +1,7 @@
 """SQLite chat history module with aiosqlite (async)."""
 import os
 import uuid
-import threading
+import asyncio
 from datetime import datetime, timezone
 from typing import Optional
 from utils.logger import logger
@@ -14,7 +14,7 @@ except ImportError:
 
 class ChatHistory:
     _instance = None
-    _lock = threading.Lock()
+    _lock = None  # initialized in init()
 
     def __new__(cls):
         if cls._instance is None:
@@ -24,10 +24,13 @@ class ChatHistory:
     def __init__(self):
         if not hasattr(self, "_initialized"):
             self._db_path = None
+            self._lock = None
             self._initialized = False
 
     def init(self, db_path: str = "data/chat.db"):
         self._db_path = db_path
+        if self._lock is None:
+            self._lock = asyncio.Lock()
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
         self._initialized = True
         logger.info(f"ChatHistory initialized: {db_path}")
