@@ -1,95 +1,57 @@
 # Technology Stack
 
-## Runtime Environment
-- Python version: 3.10+
-- CUDA/PyTorch version: CUDA 12.4 / PyTorch 2.5.0 (recommended)
-- OS support: Linux (Ubuntu 20.04/24.04), Windows, macOS
+**Generated:** 2026-05-12
+**Type:** Codebase Mapping
 
-## Core Dependencies
+## Languages & Runtimes
 
-### Deep Learning / AI
-| Library | Version | Purpose |
-|---------|---------|---------|
-| torch | 2.5.0 | Deep learning framework for model inference |
-| torchvision | 0.20.0 | Image processing for vision models |
-| transformers | 4.46.2 | HuggingFace models (Hubert, etc.) |
-| diffusers | - | Diffusion model support |
-| accelerate | - | Accelerated inference |
-| lpips | 0.1.3 | Learned perceptual image similarity |
-| tensorboardX | - | Training visualization |
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Language | Python | 3.13+ |
+| Async Runtime | aiohttp + asyncio | aiohttp 3.13.3 |
+| WebRTC | aiortc | 1.14.0 |
+| Legacy WSGI | Flask (standby) | — |
 
-### Web / Streaming
-| Library | Version | Purpose |
-|---------|---------|---------|
-| aiohttp | - | Async HTTP server |
-| aiohttp_cors | - | CORS support for aiohttp |
-| aiortc | - | WebRTC implementation in Python |
-| websockets | 12.0 | WebSocket client/server |
-| flask | - | Web framework (legacy support) |
-| flask_sockets | - | Flask WebSocket extension |
-| gradio_client | - | Gradio API client for TTS services |
+## Key Dependencies
 
-### Audio / Video
-| Library | Version | Purpose |
-|---------|---------|---------|
-| opencv-python | - | Video/image processing |
-| opencv-python-headless | - | Headless OpenCV for servers |
-| ffmpeg-python | - | FFmpeg wrapper for media processing |
-| librosa | - | Audio analysis and feature extraction |
-| soundfile | 0.12.1 | Audio file I/O |
-| resampy | - | Audio resampling |
-| python_speech_features | - | Speech feature extraction (MFCC) |
-| edge_tts | - | Microsoft Edge TTS client |
-| azure-cognitiveservices-speech | - | Azure Speech SDK |
-| imageio-ffmpeg | - | Video reading/writing |
+| Category | Library | Version | Purpose |
+|----------|---------|---------|---------|
+| ML | torch | 2.6.0+cu124 | GPU inference for avatar models |
+| ML | torchvision | 0.21.0+cu124 | Image processing |
+| ML | transformers | 4.46.2 | Face parsing, whisper |
+| ML | onnxruntime-gpu | — | Alternative inference runtime |
+| Vision | opencv-python | 4.12.0 | Image/video processing |
+| Audio | soundfile | 0.13.1 | Audio file I/O |
+| Audio | resampy | 0.4.3 | Audio resampling |
+| Audio | librosa | — | Audio analysis |
+| TTS | edge-tts | 7.2.8 | Microsoft Edge TTS |
+| LLM | openai | 2.16.0 | OpenAI-compatible LLM client |
+| RAG | chromadb | >=0.5.0 | Vector database |
+| Web | aiohttp-cors | 0.8.1 | CORS middleware |
+| Media | av | 16.0.1 | FFmpeg bindings for WebRTC |
+| Config | PyYAML | >=6.0.1 | YAML config for RAG |
 
-### Scientific Computing
-| Library | Version | Purpose |
-|---------|---------|---------|
-| numpy | - | Numerical computing |
-| scipy | - | Scientific algorithms |
-| pandas | - | Data manipulation |
-| scikit-learn | - | Machine learning utilities |
-| numba | - | JIT compilation for performance |
+## LLM Configuration
 
-### 3D / Rendering
-| Library | Version | Purpose |
-|---------|---------|---------|
-| trimesh | - | 3D mesh processing |
-| PyMCubes | - | Marching cubes algorithm |
-| dearpygui | - | GUI (optional) |
+- **Provider:** DashScope (Alibaba Cloud) via OpenAI-compatible API
+- **Endpoint:** `https://dashscope.aliyuncs.com/compatible-mode/v1`
+- **Default Model:** `qwen-plus` (overridable via `LLM_MODEL` env var)
+- **Auth:** `DASHSCOPE_API_KEY` environment variable
+- **Streaming:** Enabled (`stream=True`), segment-based with punctuation detection
 
-### Utilities
-| Library | Version | Purpose |
-|---------|---------|---------|
-| omegaconf | - | Configuration management |
-| configargparse | - | CLI + config file parsing |
-| rich | - | Rich text/progress display |
-| tqdm | - | Progress bars |
-| packaging | - | Version handling |
-| einops | - | Tensor operations |
+## Embedding Configuration
 
-## GPU Requirements
+- **Provider:** DashScope (same as LLM)
+- **Model:** `text-embedding-v3`, 1024 dimensions
+- **Endpoint:** `https://dashscope.aliyuncs.com/compatible-mode/v1`
+- **Auth:** Same `DASHSCOPE_API_KEY` env var
 
-- Minimum GPU: NVIDIA GPU with 4GB VRAM (basic inference)
-- Recommended GPU: NVIDIA GPU with 8GB+ VRAM (production use)
-- CUDA version: 11.6+ (tested with 12.4)
-- cuDNN version: 8+ (bundled with CUDA container)
+## Video Processing Pipeline
 
-## System Requirements
-
-| Component | Minimum | Recommended |
-|-----------|---------|-------------|
-| CPU | 4 cores | 8+ cores |
-| Memory | 8GB | 16GB+ |
-| GPU VRAM | 4GB | 8GB+ |
-| Storage | 5GB | 10GB+ (for models) |
-
-## Docker Support
-
-Base image: `nvcr.io/nvidia/cuda:11.6.1-cudnn8-devel-ubuntu20.04`
-
-Pre-built image available:
-```
-registry.cn-beijing.aliyuncs.com/codewithgpu2/lipku-metahuman-stream:2K9qaMBu8v
-```
+| Step | Technology | Details |
+|------|-----------|---------|
+| Frame capture | OpenCV | Avatar reference frames from `data/avatars/` |
+| Face detection | S3FD | Multi-scale face detection |
+| Feature extraction | wav2lip/musetalk/ultralight | Model-specific audio->video mapping |
+| Video encoding | av (FFmpeg) | Libx264, 25fps, custom bitrate |
+| WebRTC output | aiortc MediaStreamTrack | H264 preferred, VP8 fallback |
