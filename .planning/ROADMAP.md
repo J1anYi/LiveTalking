@@ -67,6 +67,80 @@
 
 ---
 
+## v1.2 Chat UI & History
+
+### Phase 9: Chat UX Core
+
+**Goal:** SSE 流式推送 + 消息气泡 UI + Alpine.js 前端框架集成
+
+**Requirements:** CHAT-01, CHAT-02, CHAT-04, UI-01, UI-02, UI-03
+
+**Status:** 🔲 Planned
+
+**Success Criteria:**
+1. 新建 SSE 端点推送 LLM 流式文字，前端 EventSource 逐 chunk 追加到气泡
+2. 消息气泡 user/assistant 左右对齐、不同底色，时间戳清晰
+3. 自动滚动 + 用户滚动检测，不干扰用户手动滚动
+4. Alpine.js 集成，x-for 渲染消息列表，x-model 绑定输入框
+5. 消息气泡 CSS 动画（平滑出现、过渡）
+
+**Key decisions:**
+- Alpine.js CDN 引入，零构建，与现有 jQuery 共存
+- SSE 端点独立于 `/human`，避免改造现有流式管道
+- Append-only DOM 更新（稳定元素 ID，不重建列表）
+
+---
+
+### Phase 10: SQLite History
+
+**Goal:** 对话历史持久化 + LLM streaming 完成后自动保存
+
+**Requirements:** HIST-01, HIST-02, HIST-03, HIST-04, HIST-05, UI-04
+
+**Status:** 🔲 Planned
+
+**Success Criteria:**
+1. `db/chat_history.py` 模块：conversations + messages 表，aiosqlite async 访问
+2. API 端点：`/conversations/create`, `/conversations/list`, `/conversations/get`, `/conversations/delete`, `/history`
+3. LLM streaming 完成后自动写入 DB，中断时标记 `is_interrupted=1`
+4. Session 启动时从 DB 加载 `_llm_history`，双数据源一致
+5. 线程安全：threading.Lock + WAL journal mode，自增 seq 列保证顺序
+
+---
+
+### Phase 11: Session Management
+
+**Goal:** 对话侧边栏 + 会话列表 + 新建/切换/删除
+
+**Requirements:** CONV-01, CONV-02, CONV-03, CONV-04, CHAT-05
+
+**Status:** 🔲 Planned
+
+**Success Criteria:**
+1. 左侧对话侧边栏，按更新时间排序，显示摘要和消息数
+2. 新建/切换/删除会话，首次 `/human` 调用自动创建
+3. 历史滚动加载（IntersectionObserver + before_id 分页）
+4. 打断消息在 UI 中标记为"已中断"
+
+---
+
+### Phase 12: Polish & Edge Cases
+
+**Goal:** Markdown 渲染、消息状态、Debounce、边防情况处理
+
+**Requirements:** CHAT-03, CHAT-06, HIST-05（防线验证）
+
+**Status:** 🔲 Planned
+
+**Success Criteria:**
+1. Markdown 渲染（marked.js + DOMPurify），视听分离
+2. 消息状态指示：发送中/完成/中断/错误
+3. 发送按钮 debounce 防止重复提交
+4. 消息防重（client_msg_id UNIQUE）
+5. 超长消息截断 + 展开
+
+---
+
 ## Progress
 
 | Phase | Milestone | Plans | Status | Completed |
@@ -79,8 +153,12 @@
 | 6. Testing & Documentation | v1.0 | 5/5 | Complete | 2026-05-12 |
 | 7. Graceful Exit | v1.1 | 1/1 | Complete | 2026-05-12 |
 | 8. RAG Mode Toggle | v1.1 | 1/1 | Complete | 2026-05-12 |
+| 9. Chat UX Core | v1.2 | 0/0 | 🔲 Planned | — |
+| 10. SQLite History | v1.2 | 0/0 | 🔲 Planned | — |
+| 11. Session Management | v1.2 | 0/0 | 🔲 Planned | — |
+| 12. Polish & Edge Cases | v1.2 | 0/0 | 🔲 Planned | — |
 
-**Total Progress: 100% (22/22 plans)**
+**Total Progress: 100% (22/22 plans) — v1.2: 0/0 planned**
 
 ---
 

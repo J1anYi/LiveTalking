@@ -20,3 +20,34 @@
 **Archive:** `.planning/milestones/v1.0-ROADMAP.md`
 
 ---
+
+## v1.1 — Bug Fixes & UX Enhancement
+
+**Shipped:** 2026-05-12
+**Phases:** 2 | **Plans:** 2
+
+**Delivered:** 修复优雅退出问题和 RAG 模式切换功能。
+
+**Key accomplishments:**
+- ✅ 优雅退出: 信号处理 + 会话清理 + 线程超时
+- ✅ RAG 模式切换: RAG-only / RAG+Model 双模式
+- ✅ 首条回复丢失修复 (阈值 >=5 + 中断检测)
+- ✅ 模式持久化修复 (重启后从服务端获取)
+- ✅ Edge-TTS 升级 7.2.3 → 7.2.8 (微软接口修复)
+
+---
+
+## v1.2 — Chat UI & History
+
+**Planned:** 2026-05-12
+**Phases:** 4 (9-12)
+
+**Delivered:** 重构聊天界面 + 添加对话历史持久化存储。
+
+**Target features:**
+- ✅ SSE 流式文字推送 + 消息气泡 UI
+- ✅ SQLite 持久化历史记录 + History API
+- ✅ 会话管理侧边栏
+- ✅ Alpine.js 前端框架重构
+
+---

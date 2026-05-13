@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Bug Fixes & UX Enhancement
-status: completed
-last_updated: "2026-05-12T19:00:00.000Z"
+milestone: v1.2
+milestone_name: Chat UI & History
+status: defining
+last_updated: "2026-05-12T20:00:00.000Z"
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 2
-  completed_plans: 2
-  percent: 100
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
-# State: LiveTalking v1.1 Bug Fixes & UX Enhancement
+# State: LiveTalking v1.2 Chat UI & History
 
 **Last Updated**: 2026-05-12
 
@@ -20,26 +20,22 @@ progress:
 
 | Attribute | Value |
 |-----------|-------|
-| Status | Completed |
-| Current Milestone | v1.1 Bug Fixes & UX Enhancement |
-| Progress | 100% |
+| Status | Defining requirements |
+| Current Milestone | v1.2 Chat UI & History |
+| Progress | 0% |
 
 ## Current Position
 
-Phase: 08-rag-mode-toggle (Completed)
-Plan: 08-01 (Completed)
-Status: All v1.1 phases completed
-Last activity: 2026-05-12 — Phase 8: RAG Mode Toggle completed
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-12 — Milestone v1.2 started
 
 ## Milestone Goals
 
-1. **优雅退出**: ✅ 修复 Ctrl+C 后进程无法正常退出的问题
-2. **RAG 模式切换**: ✅ Dashboard 添加按钮支持 RAG-only / RAG+模型知识 切换
-
-## Completed Phases
-
-- **Phase 7**: Graceful Exit (EXIT-01, EXIT-02, EXIT-03) ✅
-- **Phase 8**: RAG Mode Toggle (RAG-01, RAG-02, RAG-03, RAG-04, RAG-05) ✅
+1. **聊天界面**: 重构 dashboard 为正规聊天面板（消息气泡、对话列表、历史滚动）
+2. **历史记录**: SQLite 持久化存储对话记录 + API 端点
+3. **前端框架**: 采用轻量化前端框架重构
 
 ## Previous Milestone Archive
 
