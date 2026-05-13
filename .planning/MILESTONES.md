@@ -53,4 +53,6 @@
 - ✅ 会话管理侧边栏 + Markdown 渲染
 - ✅ 中断指示 + 发送防重
 
+**Archive:** `.planning/reports/MILESTONE_SUMMARY-v1.2.md`
+
 ---
