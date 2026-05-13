@@ -185,7 +185,9 @@ class BaseAvatar:
             self.tts.flush_talk()
         if hasattr(self, 'asr') and hasattr(self.asr, 'flush_talk'):
             self.asr.flush_talk()
-        self.custom_audiotype = 0  
+        self.custom_audiotype = 0
+        # 递增生成 ID，用于中断正在运行的 LLM 响应
+        self._gen_id = getattr(self, '_gen_id', 0) + 1  
 
     # def flush(self):
     #     self.flush_talk()

@@ -67,18 +67,18 @@ def get_default_config() -> dict:
 
 def build_rag_prompt(query: str, retrieved_chunks: list[dict],
                      max_context_chars: int = 2000) -> str:
+    """构建 RAG-only 模式的 prompt（纯知识库回答）"""
     context_parts = []
     total_chars = 0
     for chunk in retrieved_chunks:
         text = chunk.get("text", "")
         if total_chars + len(text) > max_context_chars:
             break
-        context_parts.append(f"[KB]: {text}")
+        context_parts.append(f"- {text}")
         total_chars += len(text)
-    NL = chr(10)+chr(10)
+    NL = chr(10)
     context = NL.join(context_parts)
-    nl = chr(10)
-    return f"You are a knowledge assistant.{nl}{nl}KB content:{nl}{context}{nl}{nl}Query: {query}{nl}{nl}Answer concisely:"
+    return f"你是一个知识助手，请根据以下知识库内容回答问题，不要添加知识库以外的内容。{NL}{NL}知识库内容：{NL}{context}{NL}{NL}问题：{query}{NL}{NL}请用简短、口语化的方式回答："
 
 
 def quick_retrieve(query: str, top_k: int = 3, persist_dir: str = "./data/chromadb",

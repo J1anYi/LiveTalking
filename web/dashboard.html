@@ -603,10 +603,25 @@
                 });
             });
 
-            // 页面加载时恢复 RAG 模式
-            const savedRagMode = localStorage.getItem('rag_mode');
-            if (savedRagMode) {
-                $(`input[name="rag-mode"][value="${savedRagMode}"]`).prop('checked', true);
+            // 页面加载时从服务端获取实际 RAG 模式
+            const sessionid = document.getElementById('sessionid').value;
+            if (sessionid) {
+                fetch('/get_rag_mode', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({sessionid: sessionid})
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.code === 0 && data.data && data.data.mode) {
+                        $(`input[name="rag-mode"][value="${data.data.mode}"]`).prop('checked', true);
+                        // 同步到 localStorage
+                        localStorage.setItem('rag_mode', data.data.mode);
+                    }
+                }).catch(() => {
+                    // 服务端查询失败时回退到 localStorage
+                    const savedRagMode = localStorage.getItem('rag_mode') || 'rag_only';
+                    $(`input[name="rag-mode"][value="${savedRagMode}"]`).prop('checked', true);
+                });
             }
 
             // 聊天模式表单提交
@@ -760,11 +775,31 @@
                 const originalOnConnected = window.onWebRTCConnected;
                 window.onWebRTCConnected = function() {
                     updateConnectionStatus('connected');
+                    // 连接建立后同步 RAG 模式到后端
+                    const sessionid = document.getElementById('sessionid').value;
+                    const savedRagMode = localStorage.getItem('rag_mode') || 'rag_only';
+                    if (sessionid) {
+                        fetch('/set_rag_mode', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({sessionid: sessionid, mode: savedRagMode})
+                        }).then(() => console.log('RAG mode synced:', savedRagMode));
+                    }
                     if (originalOnConnected) originalOnConnected();
                 };
             } else {
                 window.onWebRTCConnected = function() {
                     updateConnectionStatus('connected');
+                    // 连接建立后同步 RAG 模式到后端
+                    const sessionid = document.getElementById('sessionid').value;
+                    const savedRagMode = localStorage.getItem('rag_mode') || 'rag_only';
+                    if (sessionid) {
+                        fetch('/set_rag_mode', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({sessionid: sessionid, mode: savedRagMode})
+                        }).then(() => console.log('RAG mode synced:', savedRagMode));
+                    }
                 };
             }
 
