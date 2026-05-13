@@ -83,6 +83,10 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
         end = time.perf_counter()
         logger.info(f"llm Time init: {end-start}s,{message}")
 
+        # 在线程中创建事件循环，用于异步 DB/SSE 操作
+        _loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(_loop)
+
         # 记录当前的生成 ID，用于中断检测
         gen_id = getattr(avatar_session, '_gen_id', 0)
 
@@ -91,18 +95,12 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
         _chat_db = ChatHistory()
         _conv_id = session_manager.get_active_conversation(avatar_session.sessionid)
         if not _conv_id:
-            _conv_id = asyncio.run_coroutine_threadsafe(
-                _chat_db.create_conversation(avatar_session.sessionid),
-                asyncio.get_event_loop()
-            ).result()
+            _conv_id = _loop.run_until_complete(_chat_db.create_conversation(avatar_session.sessionid))
             session_manager.set_active_conversation(avatar_session.sessionid, _conv_id)
 
         # 保存用户消息（最多截断10000字）
         user_content = message[:10000]
-        asyncio.run_coroutine_threadsafe(
-            _chat_db.add_message(_conv_id, "user", user_content),
-            asyncio.get_event_loop()
-        )
+        _loop.run_until_complete(_chat_db.add_message(_conv_id, "user", user_content))
 
         # RAG retrieval for chat mode (enhanced prompt)
         enhanced_message = message
@@ -170,15 +168,9 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
                             if cleaned:
                                 logger.info(f"LLM segment: {cleaned[:50]}...")
                                 avatar_session.put_msg_txt(cleaned, datainfo)
-                                try:
-                                    loop = asyncio.get_event_loop()
-                                    if loop.is_running():
-                                        asyncio.run_coroutine_threadsafe(
-                                            SSEManager().push_chunk(avatar_session.sessionid, {"type": "chunk", "text": cleaned}),
-                                            loop
-                                        )
-                                except RuntimeError:
-                                    pass
+                                _loop.run_until_complete(
+                                    SSEManager().push_chunk(avatar_session.sessionid, {"type": "chunk", "text": cleaned})
+                                )
                             result=""
                 result = result+msg[lastpos:]
         end = time.perf_counter()
@@ -193,34 +185,20 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
         # 保存助手消息到 DB（最多截断10000字）
         if result:
             asst_content = result[:10000]
-            asyncio.run_coroutine_threadsafe(
-                _chat_db.add_message(_conv_id, "assistant", asst_content),
-                asyncio.get_event_loop()
-            )
+            _loop.run_until_complete(_chat_db.add_message(_conv_id, "assistant", asst_content))
 
         # Push done event to SSE
-        try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                asyncio.run_coroutine_threadsafe(
-                    SSEManager().push_chunk(avatar_session.sessionid, {"type": "done"}),
-                    loop
-                )
-        except RuntimeError:
-            pass
+        _loop.run_until_complete(SSEManager().push_chunk(avatar_session.sessionid, {"type": "done"}))
 
         # Update conversation history
         avatar_session._llm_history.append({'role': 'user', 'content': message})
-        
+        _loop.close()
+
     except Exception as e:
         logger.exception('llm exceptiopn:')
+        sse = SSEManager()
         try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                asyncio.run_coroutine_threadsafe(
-                    SSEManager().push_chunk(avatar_session.sessionid, {"type": "error", "text": str(e)}),
-                    loop
-                )
-        except RuntimeError:
+            _loop.run_until_complete(sse.push_chunk(avatar_session.sessionid, {"type": "error", "text": str(e)}))
+        except (RuntimeError, NameError):
             pass
         return   
