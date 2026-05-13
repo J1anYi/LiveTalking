@@ -377,27 +377,255 @@
                     <div class="card-body">
                         <div class="tab-content" id="interaction-tabs-content">
                             <!-- 对话模式 -->
-                            <div class="tab-pane fade show active" id="chat" role="tabpanel" aria-labelledby="chat-tab">
-                                <div class="asr-container mb-3" id="chat-messages">
-                                    <div class="asr-text system-message">
-                                        系统: 欢迎使用livetalking，请点击"开始连接"按钮开始对话。
-                                    </div>
-                                </div>
-                                
-                                <form id="chat-form">
-                                    <div class="input-group mb-3">
-                                        <textarea class="form-control" id="chat-message" rows="3" placeholder="输入您想对数字人说的话..."></textarea>
-                                        <button class="btn btn-primary" type="submit">
-                                            <i class="bi bi-send"></i> 发送
+                            <div class="tab-pane fade show active" id="chat" role="tabpanel" aria-labelledby="chat-tab"
+                                 x-data="chatPanel()" x-cloak>
+                                <style>
+                                    [x-cloak] { display: none !important; }
+                                    .chat-layout { display: flex; gap: 10px; }
+                                    .chat-sidebar { width: 140px; flex-shrink: 0; }
+                                    .chat-sidebar .conv-item { padding: 6px 8px; cursor: pointer; border-radius: 6px; font-size: 0.85em; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+                                    .chat-sidebar .conv-item:hover { background: #e9ecef; }
+                                    .chat-sidebar .conv-item.active { background: #4361ee; color: #fff; }
+                                    .chat-sidebar .conv-item .del { float: right; opacity: 0; cursor: pointer; }
+                                    .chat-sidebar .conv-item:hover .del { opacity: 0.6; }
+                                    .chat-main { flex: 1; min-width: 0; }
+                                    .chat-msg-container { height: 280px; overflow-y: auto; padding: 10px; background: #f5f5f5; border-radius: 8px; margin-bottom: 10px; }
+                                    .chat-bubble { max-width: 80%; margin-bottom: 10px; clear: both; word-wrap: break-word; }
+                                    .chat-bubble.user { float: right; }
+                                    .chat-bubble.user .bubble { background: #4361ee; color: #fff; border-radius: 18px 18px 4px 18px; padding: 8px 14px; }
+                                    .chat-bubble.assistant { float: left; }
+                                    .chat-bubble.assistant .bubble { background: #e9ecef; color: #212529; border-radius: 18px 18px 18px 4px; padding: 8px 14px; }
+                                    .chat-bubble.system { float: none; text-align: center; }
+                                    .chat-bubble.system .bubble { background: transparent; color: #6c757d; font-size: 0.85em; padding: 4px 8px; }
+                                    .chat-bubble .timestamp { font-size: 0.7em; color: #999; margin-top: 2px; }
+                                    .chat-bubble.user .timestamp { text-align: right; }
+                                    .chat-bubble.assistant .timestamp { text-align: left; }
+                                    .interrupted-badge { font-size: 0.75em; color: #dc3545; margin-left: 6px; }
+                                    .chat-typing { float: left; clear: both; padding: 8px 14px; background: #e9ecef; border-radius: 18px; margin-bottom: 10px; }
+                                    .chat-typing .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #999; margin: 0 2px; animation: typing 1.4s infinite; }
+                                    .chat-typing .dot:nth-child(2) { animation-delay: 0.2s; }
+                                    .chat-typing .dot:nth-child(3) { animation-delay: 0.4s; }
+                                    @keyframes typing { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+                                    .chat-input-area { position: relative; }
+                                    .scroll-bottom-btn { position: absolute; bottom: 100px; right: 20px; width: 36px; height: 36px; border-radius: 50%; background: #4361ee; color: #fff; border: none; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 10; }
+                                </style>
+
+                                <div class="chat-layout">
+                                    <!-- Sidebar -->
+                                    <div class="chat-sidebar">
+                                        <button class="btn btn-sm btn-outline-primary w-100 mb-2" @click="newConversation()">
+                                            <i class="bi bi-plus-lg"></i> 新对话
                                         </button>
+                                        <template x-for="conv in conversations" :key="conv.id">
+                                            <div class="conv-item" :class="{ active: conv.id === activeConvId }"
+                                                 @click="switchConversation(conv.id)"
+                                                 @click.away="">
+                                                <span x-text="conv.title"></span>
+                                                <span class="del" @click.stop="deleteConversation(conv.id)">&times;</span>
+                                            </div>
+                                        </template>
                                     </div>
-                                </form>
-                                
-                                <!-- 按住说话按钮 -->
-                                <div class="voice-record-btn" id="voice-record-btn">
-                                    <i class="bi bi-mic-fill"></i>
+                                    <!-- Main -->
+                                    <div class="chat-main">
+                                        <div class="chat-msg-container" x-ref="msgContainer" @scroll="onScroll()">
+                                            <template x-for="(msg, i) in messages" :key="i">
+                                                <div :class="'chat-bubble ' + msg.role">
+                                                    <div class="bubble" x-html="renderContent(msg.content)"></div>
+                                                    <div class="timestamp">
+                                                        <span x-text="msg.time"></span>
+                                                        <span x-show="msg.interrupted" class="interrupted-badge">&#9888; 已中断</span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <div x-show="loading" class="chat-typing">
+                                                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                                            </div>
+                                        </div>
+
+                                        <button class="scroll-bottom-btn" x-ref="scrollBtn" @click="scrollToBottom()" x-show="!atBottom">
+                                            <i class="bi bi-arrow-down"></i>
+                                        </button>
+
+                                        <form @submit.prevent="sendMessage()" class="chat-input-area">
+                                            <div class="input-group">
+                                                <textarea class="form-control" x-model="inputText" rows="2" placeholder="输入您想对数字人说的话..." @keydown.enter.prevent="if(!$event.shiftKey)sendMessage()"></textarea>
+                                                <button class="btn btn-primary" type="submit" :disabled="!inputText.trim() || sending">
+                                                    <i class="bi bi-send"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+
+                                        <div class="voice-record-btn" id="voice-record-btn">
+                                            <i class="bi bi-mic-fill"></i>
+                                        </div>
+                                        <div class="voice-record-label">按住说话，松开发送</div>
+                                    </div>
                                 </div>
-                                <div class="voice-record-label">按住说话，松开发送</div>
+
+                                <script>
+                                    function chatPanel() {
+                                        return {
+                                            messages: [],
+                                            conversations: [],
+                                            activeConvId: null,
+                                            inputText: '',
+                                            loading: false,
+                                            sending: false,
+                                            atBottom: true,
+                                            sse: null,
+                                            init() {
+                                                this.addMessage('system', '欢迎使用livetalking，请点击"开始连接"按钮开始对话。');
+                                            },
+                                            addMessage(role, content, interrupted) {
+                                                const now = new Date();
+                                                const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+                                                this.messages.push({ role, content, time, interrupted: !!interrupted });
+                                                this.$nextTick(() => this.scrollToBottom());
+                                            },
+                                            renderContent(text) {
+                                                if (!text) return '';
+                                                try {
+                                                    return DOMPurify.sanitize(marked.parse(text));
+                                                } catch(e) {
+                                                    return text;
+                                                }
+                                            },
+                                            async loadConversations() {
+                                                const sid = document.getElementById('sessionid').value;
+                                                if (!sid || sid === '0') return;
+                                                try {
+                                                    const resp = await fetch('/conversations/list', {
+                                                        method: 'POST',
+                                                        headers: {'Content-Type': 'application/json'},
+                                                        body: JSON.stringify({sessionid: sid})
+                                                    });
+                                                    const data = await resp.json();
+                                                    if (data.code === 0) {
+                                                        this.conversations = data.data.conversations;
+                                                    }
+                                                } catch(e) {}
+                                            },
+                                            async switchConversation(convId) {
+                                                this.activeConvId = convId;
+                                                this.messages = [];
+                                                try {
+                                                    const resp = await fetch('/conversations/get', {
+                                                        method: 'POST',
+                                                        headers: {'Content-Type': 'application/json'},
+                                                        body: JSON.stringify({conv_id: convId})
+                                                    });
+                                                    const data = await resp.json();
+                                                    if (data.code === 0 && data.data && data.data.messages) {
+                                                        for (const m of data.data.messages) {
+                                                            this.addMessage(m.role, m.content, m.is_interrupted);
+                                                        }
+                                                    }
+                                                } catch(e) {}
+                                            },
+                                            async deleteConversation(convId) {
+                                                try {
+                                                    await fetch('/conversations/delete', {
+                                                        method: 'POST',
+                                                        headers: {'Content-Type': 'application/json'},
+                                                        body: JSON.stringify({conv_id: convId})
+                                                    });
+                                                    if (this.activeConvId === convId) {
+                                                        this.activeConvId = null;
+                                                        this.messages = [];
+                                                        this.addMessage('system', '对话已删除');
+                                                    }
+                                                    this.loadConversations();
+                                                } catch(e) {}
+                                            },
+                                            async newConversation() {
+                                                const sid = document.getElementById('sessionid').value;
+                                                if (!sid || sid === '0') return;
+                                                try {
+                                                    const resp = await fetch('/conversations/create', {
+                                                        method: 'POST',
+                                                        headers: {'Content-Type': 'application/json'},
+                                                        body: JSON.stringify({sessionid: sid})
+                                                    });
+                                                    const data = await resp.json();
+                                                    if (data.code === 0) {
+                                                        this.activeConvId = data.data.conv_id;
+                                                        this.messages = [];
+                                                        this.addMessage('system', '新对话已创建');
+                                                        this.loadConversations();
+                                                    }
+                                                } catch(e) {}
+                                            },
+                                            connectSSE(sessionid) {
+                                                if (this.sse) this.sse.close();
+                                                this.sse = new EventSource('/sse/chat?sessionid=' + sessionid);
+                                                let currentMsgId = null;
+                                                this.sse.onmessage = (e) => {
+                                                    try {
+                                                        const data = JSON.parse(e.data);
+                                                        if (data.type === 'chunk') {
+                                                            if (!currentMsgId) {
+                                                                currentMsgId = this.messages.length;
+                                                                this.addMessage('assistant', '');
+                                                            }
+                                                            this.messages[currentMsgId].content += data.text;
+                                                            this.$nextTick(() => this.scrollToBottom());
+                                                        } else if (data.type === 'done') {
+                                                            this.loading = false;
+                                                            this.sending = false;
+                                                            currentMsgId = null;
+                                                            this.loadConversations();
+                                                        } else if (data.type === 'error') {
+                                                            this.addMessage('system', '回答出错: ' + (data.text || '未知错误'));
+                                                            this.loading = false;
+                                                            this.sending = false;
+                                                            currentMsgId = null;
+                                                        } else if (data.type === 'timeout') {
+                                                            this.loading = false;
+                                                            this.sending = false;
+                                                            currentMsgId = null;
+                                                        }
+                                                    } catch(e) {}
+                                                };
+                                                this.sse.onerror = () => {};
+                                            },
+                                            disconnectSSE() {
+                                                if (this.sse) { this.sse.close(); this.sse = null; }
+                                            },
+                                            sendMessage() {
+                                                const text = this.inputText.trim();
+                                                if (!text || this.sending) return;
+                                                this.sending = true;
+                                                this.addMessage('user', text);
+                                                this.inputText = '';
+                                                this.loading = true;
+                                                const sessionid = document.getElementById('sessionid').value;
+                                                if (sessionid && sessionid !== '0') {
+                                                    this.connectSSE(sessionid);
+                                                    if (!this.activeConvId) this.loadConversations();
+                                                }
+                                                fetch('/human', {
+                                                    method: 'POST',
+                                                    headers: {'Content-Type': 'application/json'},
+                                                    body: JSON.stringify({ text, type: 'chat', interrupt: true, sessionid })
+                                                }).catch(() => {
+                                                    this.addMessage('system', '发送失败，请重试');
+                                                }).finally(() => {
+                                                    setTimeout(() => { this.sending = false; }, 500);
+                                                });
+                                            },
+                                            onScroll() {
+                                                const el = this.$refs.msgContainer;
+                                                if (!el) return;
+                                                this.atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 50;
+                                            },
+                                            scrollToBottom() {
+                                                const el = this.$refs.msgContainer;
+                                                if (el) el.scrollTop = el.scrollHeight;
+                                                this.atBottom = true;
+                                            }
+                                        }
+                                    }
+                                </script>
                             </div>
                             
                             <!-- 朗读模式 -->
@@ -431,6 +659,9 @@
     <script src="srs.sdk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#video-size-slider').on('input', function() {
@@ -624,30 +855,28 @@
                 });
             }
 
-            // 聊天模式表单提交
-            $('#chat-form').on('submit', function(e) {
-                e.preventDefault();
-                var message = $('#chat-message').val();
-                if (!message.trim()) return;
-                
-                console.log('Sending chat message:', message);
-                
-                fetch('/human', {
-                    body: JSON.stringify({
-                        text: message,
-                        type: 'chat',
-                        interrupt: true,
-                        sessionid: String(document.getElementById('sessionid').value),
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'POST'
-                });
-                
-                addChatMessage(message, 'user');
-                $('#chat-message').val('');
-            });
+            // WebRTC 连接后，通知 Alpine.js 建立 SSE
+            var _origOnConnected = window.onWebRTCConnected || function(){};
+            window.onWebRTCConnected = function() {
+                var sid = document.getElementById('sessionid').value;
+                if (sid && sid !== '0') {
+                    var chatEl = document.querySelector('[x-data="chatPanel()"]');
+                    if (chatEl && chatEl.__x) {
+                        chatEl.__x.$data.connectSSE(sid);
+                    }
+                }
+                _origOnConnected();
+            };
+
+            // 停止时断开 SSE
+            var _origStop = window.stop || function(){};
+            window.stop = function() {
+                var chatEl = document.querySelector('[x-data="chatPanel()"]');
+                if (chatEl && chatEl.__x) {
+                    chatEl.__x.$data.disconnectSSE();
+                }
+                _origStop();
+            };
 
             // 按住说话功能
             let mediaRecorder;

@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Chat UI & History
-status: defining
-last_updated: "2026-05-12T20:00:00.000Z"
+status: completed
+last_updated: "2026-05-12T21:00:00.000Z"
 progress:
   total_phases: 4
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  completed_phases: 4
+  total_plans: 4
+  completed_plans: 4
+  percent: 100
 ---
 
 # State: LiveTalking v1.2 Chat UI & History
@@ -20,22 +20,23 @@ progress:
 
 | Attribute | Value |
 |-----------|-------|
-| Status | Defining requirements |
+| Status | Completed |
 | Current Milestone | v1.2 Chat UI & History |
-| Progress | 0% |
+| Progress | 100% |
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-12 — Milestone v1.2 started
+Phase: 12-polish-edge-cases (Completed)
+Plan: 12-01 (Completed)
+Status: All v1.2 phases completed
+Last activity: 2026-05-12 — Milestone v1.2 completed
 
 ## Milestone Goals
 
-1. **聊天界面**: 重构 dashboard 为正规聊天面板（消息气泡、对话列表、历史滚动）
-2. **历史记录**: SQLite 持久化存储对话记录 + API 端点
-3. **前端框架**: 采用轻量化前端框架重构
+1. **聊天界面**: ✅ SSE 流式文字推送 + 消息气泡 UI + Alpine.js
+2. **历史记录**: ✅ SQLite 持久化存储 + History API
+3. **会话管理**: ✅ 侧边栏 + 新建/切换/删除
+4. **前端框架**: ✅ Alpine.js + marked.js + Markdown 渲染
 
 ## Previous Milestone Archive
 

@@ -42,6 +42,7 @@ import registry
 from server.routes import setup_routes
 from server.rtc_manager import RTCManager
 from server.session_manager import session_manager
+from server.chat_db import ChatHistory
 
 import argparse
 import random
@@ -155,6 +156,7 @@ def main():
 
     # init rtc manager
     session_manager.init_builder(build_avatar_session)
+    ChatHistory().init(db_path="data/chat.db")
     rtc_manager = RTCManager(opt)
     # share avatar_sessions (RTCManager handles it but routes.py expects it)
     

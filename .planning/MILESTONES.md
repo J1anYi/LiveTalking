@@ -39,15 +39,18 @@
 
 ## v1.2 — Chat UI & History
 
-**Planned:** 2026-05-12
-**Phases:** 4 (9-12)
+**Shipped:** 2026-05-12
+**Phases:** 4 (9-12) | **Plans:** 4
 
 **Delivered:** 重构聊天界面 + 添加对话历史持久化存储。
 
-**Target features:**
-- ✅ SSE 流式文字推送 + 消息气泡 UI
-- ✅ SQLite 持久化历史记录 + History API
-- ✅ 会话管理侧边栏
-- ✅ Alpine.js 前端框架重构
+**Key accomplishments:**
+- ✅ SSE 流式推送 LLM 文字到前端（打字机效果）
+- ✅ 消息气泡 UI（user/assistant 视觉区分）
+- ✅ Alpine.js 轻量前端框架重构（零构建）
+- ✅ aiosqlite 持久化对话记录（conversations + messages 表）
+- ✅ History API（创建/列表/获取/删除会话）
+- ✅ 会话管理侧边栏 + Markdown 渲染
+- ✅ 中断指示 + 发送防重
 
 ---

@@ -179,6 +179,101 @@ async def get_rag_mode(request):
         return json_error(str(e))
 
 
+async def sse_chat(request):
+    """SSE 端点：推送 LLM 流式文字到前端"""
+    sessionid = request.query.get("sessionid", "")
+    if not sessionid:
+        return json_error("sessionid required")
+    from server.sse_manager import SSEManager
+    sse = SSEManager()
+    q = sse.subscribe(sessionid)
+    response = web.StreamResponse(
+        status=200,
+        reason="OK",
+        headers={
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Access-Control-Allow-Origin": "*",
+        },
+    )
+    await response.prepare(request)
+    try:
+        while True:
+            data = await asyncio.wait_for(q.get(), timeout=30)
+            msg = f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+            await response.write(msg.encode("utf-8"))
+            if data.get("type") == "done" or data.get("type") == "error":
+                break
+    except asyncio.TimeoutError:
+        await response.write(b"data: {\"type\":\"timeout\"}\n\n")
+    except (ConnectionResetError, ConnectionAbortedError):
+        pass
+    finally:
+        sse.unsubscribe(sessionid, q)
+    return response
+
+
+# ─── 会话历史 API ─────────────────────────────────────────────────────────
+
+async def create_conversation(request):
+    try:
+        params = await request.json()
+        sessionid = params.get("sessionid", "")
+        if not sessionid:
+            return json_error("sessionid required")
+        from server.chat_db import ChatHistory
+        ch = ChatHistory()
+        conv_id = await ch.create_conversation(sessionid)
+        session_manager.set_active_conversation(sessionid, conv_id)
+        return json_ok(data={"conv_id": conv_id})
+    except Exception as e:
+        logger.exception("create_conversation error:")
+        return json_error(str(e))
+
+async def list_conversations(request):
+    try:
+        params = await request.json()
+        sessionid = params.get("sessionid", "")
+        from server.chat_db import ChatHistory
+        ch = ChatHistory()
+        convs = await ch.list_conversations(sessionid)
+        return json_ok(data={"conversations": convs})
+    except Exception as e:
+        logger.exception("list_conversations error:")
+        return json_error(str(e))
+
+async def get_conversation(request):
+    try:
+        params = await request.json()
+        conv_id = params.get("conv_id", "")
+        if not conv_id:
+            return json_error("conv_id required")
+        from server.chat_db import ChatHistory
+        ch = ChatHistory()
+        conv = await ch.get_conversation(conv_id)
+        if not conv:
+            return json_error("conversation not found")
+        return json_ok(data=conv)
+    except Exception as e:
+        logger.exception("get_conversation error:")
+        return json_error(str(e))
+
+async def delete_conversation(request):
+    try:
+        params = await request.json()
+        conv_id = params.get("conv_id", "")
+        if not conv_id:
+            return json_error("conv_id required")
+        from server.chat_db import ChatHistory
+        ch = ChatHistory()
+        await ch.delete_conversation(conv_id)
+        return json_ok()
+    except Exception as e:
+        logger.exception("delete_conversation error:")
+        return json_error(str(e))
+
+
 # ─── 路由注册 ──────────────────────────────────────────────────────────────
 
 def setup_routes(app):
@@ -191,4 +286,9 @@ def setup_routes(app):
     app.router.add_post("/is_speaking", is_speaking)
     app.router.add_post("/set_rag_mode", set_rag_mode)
     app.router.add_post("/get_rag_mode", get_rag_mode)
+    app.router.add_get("/sse/chat", sse_chat)
+    app.router.add_post("/conversations/create", create_conversation)
+    app.router.add_post("/conversations/list", list_conversations)
+    app.router.add_post("/conversations/get", get_conversation)
+    app.router.add_post("/conversations/delete", delete_conversation)
     app.router.add_static('/', path='web')

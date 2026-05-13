@@ -75,7 +75,7 @@
 
 **Requirements:** CHAT-01, CHAT-02, CHAT-04, UI-01, UI-02, UI-03
 
-**Status:** 🔲 Planned
+**Status:** ✅ Completed (2026-05-12)
 
 **Success Criteria:**
 1. 新建 SSE 端点推送 LLM 流式文字，前端 EventSource 逐 chunk 追加到气泡
@@ -97,7 +97,7 @@
 
 **Requirements:** HIST-01, HIST-02, HIST-03, HIST-04, HIST-05, UI-04
 
-**Status:** 🔲 Planned
+**Status:** ✅ Completed (2026-05-12)
 
 **Success Criteria:**
 1. `db/chat_history.py` 模块：conversations + messages 表，aiosqlite async 访问
@@ -114,7 +114,7 @@
 
 **Requirements:** CONV-01, CONV-02, CONV-03, CONV-04, CHAT-05
 
-**Status:** 🔲 Planned
+**Status:** ✅ Completed (2026-05-12)
 
 **Success Criteria:**
 1. 左侧对话侧边栏，按更新时间排序，显示摘要和消息数
@@ -128,9 +128,9 @@
 
 **Goal:** Markdown 渲染、消息状态、Debounce、边防情况处理
 
-**Requirements:** CHAT-03, CHAT-06, HIST-05（防线验证）
+**Requirements:** CHAT-03, CHAT-06
 
-**Status:** 🔲 Planned
+**Status:** ✅ Completed (2026-05-12)
 
 **Success Criteria:**
 1. Markdown 渲染（marked.js + DOMPurify），视听分离
@@ -153,12 +153,12 @@
 | 6. Testing & Documentation | v1.0 | 5/5 | Complete | 2026-05-12 |
 | 7. Graceful Exit | v1.1 | 1/1 | Complete | 2026-05-12 |
 | 8. RAG Mode Toggle | v1.1 | 1/1 | Complete | 2026-05-12 |
-| 9. Chat UX Core | v1.2 | 0/0 | 🔲 Planned | — |
-| 10. SQLite History | v1.2 | 0/0 | 🔲 Planned | — |
-| 11. Session Management | v1.2 | 0/0 | 🔲 Planned | — |
-| 12. Polish & Edge Cases | v1.2 | 0/0 | 🔲 Planned | — |
+| 9. Chat UX Core | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
+| 10. SQLite History | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
+| 11. Session Management | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
+| 12. Polish & Edge Cases | v1.2 | 1/1 | ✅ Complete | 2026-05-12 |
 
-**Total Progress: 100% (22/22 plans) — v1.2: 0/0 planned**
+**Total Progress: 100% (26/26 plans)**
 
 ---
 

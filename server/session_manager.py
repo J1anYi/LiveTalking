@@ -30,6 +30,7 @@ class SessionManager:
             self.sessions: Dict[str, BaseAvatar] = {}
             self.build_session_fn = None
             self.rag_modes: Dict[str, str] = {}  # sessionid -> "rag_only" | "rag_plus_model"
+            self.active_conversations: Dict[str, str] = {}  # sessionid -> conv_id
             self.initialized = True
 
     def init_builder(self, build_session_fn):
@@ -92,6 +93,12 @@ class SessionManager:
     def get_rag_mode(self, sessionid: str) -> str:
         """获取 RAG 模式，默认为 'rag_only'"""
         return self.rag_modes.get(sessionid, "rag_only")
+
+    def get_active_conversation(self, sessionid: str) -> str | None:
+        return self.active_conversations.get(sessionid)
+
+    def set_active_conversation(self, sessionid: str, conv_id: str):
+        self.active_conversations[sessionid] = conv_id
 
     async def shutdown_all(self):
         """关闭所有会话并清理资源"""
