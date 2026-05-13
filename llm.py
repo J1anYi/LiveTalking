@@ -70,7 +70,9 @@ def _get_openai_client():
     return _openai_client
 
 
-def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
+def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict=None):
+    if datainfo is None:
+        datainfo = {}
     try:
         opt = avatar_session.opt
 

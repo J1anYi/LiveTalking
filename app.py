@@ -16,8 +16,6 @@
 ###############################################################################
 
 # server.py
-from flask import Flask, render_template,send_from_directory,request, jsonify
-from flask_sockets import Sockets
 import base64
 import json
 #import gevent
@@ -57,8 +55,6 @@ import copy
 import gc
 
 
-app = Flask(__name__)
-#sockets = Sockets(app)
 opt = None
 model = None
 global_avatars = {} # avatar_id: payload
