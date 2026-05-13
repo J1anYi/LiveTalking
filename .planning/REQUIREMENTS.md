@@ -54,34 +54,34 @@
 
 ### Chat UX 核心体验
 
-- [ ] **CHAT-01**: SSE 端点推送 LLM 流式文字到前端，前端 EventSource 逐 chunk 追加到气泡
-- [ ] **CHAT-02**: 消息气泡 UI，user 和 assistant 消息视觉区分（左右对齐/不同底色）
-- [ ] **CHAT-03**: 消息状态指示（发送中 loading / 完成 / 中断 / 错误）
-- [ ] **CHAT-04**: 自动滚动 + 用户滚动检测（仅用户位于底部时自动滚）
-- [ ] **CHAT-05**: 打断/中断指示，中断消息标记为"已中断"并显示 UI 提示
-- [ ] **CHAT-06**: Markdown 渲染（marked.js + DOMPurify），视听分离（文字富文本、TTS 朗读纯文本）
+- [x] **CHAT-01**: SSE 端点推送 LLM 流式文字到前端，前端 EventSource 逐 chunk 追加到气泡
+- [x] **CHAT-02**: 消息气泡 UI，user 和 assistant 消息视觉区分（左右对齐/不同底色）
+- [x] **CHAT-03**: 消息状态指示（发送中 loading / 完成 / 中断 / 错误）
+- [x] **CHAT-04**: 自动滚动 + 用户滚动检测（仅用户位于底部时自动滚）
+- [x] **CHAT-05**: 打断/中断指示，中断消息标记为"已中断"并显示 UI 提示
+- [x] **CHAT-06**: Markdown 渲染（marked.js + DOMPurify），视听分离（文字富文本、TTS 朗读纯文本）
 
 ### 历史记录持久化
 
-- [ ] **HIST-01**: SQLite 数据库（conversations + messages 两张表），aiosqlite async 访问
-- [ ] **HIST-02**: API 端点：保存消息 / 获取历史（分页）/ 列表会话 / 删除会话
-- [ ] **HIST-03**: LLM streaming 完成后自动保存到 DB，中断时标记 `is_interrupted`
-- [ ] **HIST-04**: Session 启动时从 DB 加载历史到 `_llm_history`，双数据源一致
-- [ ] **HIST-05**: 线程安全（threading.Lock + WAL journal mode），自增 `seq` 列排序
+- [x] **HIST-01**: SQLite 数据库（conversations + messages 两张表），aiosqlite async 访问
+- [x] **HIST-02**: API 端点：保存消息 / 获取历史（分页）/ 列表会话 / 删除会话
+- [x] **HIST-03**: LLM streaming 完成后自动保存到 DB，中断时标记 `is_interrupted`
+- [x] **HIST-04**: Session 启动时从 DB 加载历史到 `_llm_history`，双数据源一致
+- [x] **HIST-05**: 线程安全（asyncio.Lock + WAL journal mode），自增 `seq` 列排序
 
 ### 会话管理
 
-- [ ] **CONV-01**: 对话侧边栏（会话列表，按时间排序，显示摘要和消息数）
-- [ ] **CONV-02**: 新建/切换/删除会话
-- [ ] **CONV-03**: 历史滚动加载（分页，`before_id` 参数，IntersectionObserver）
-- [ ] **CONV-04**: 首次 `/human` 调用时自动创建会话
+- [x] **CONV-01**: 对话侧边栏（会话列表，按时间排序，显示摘要和消息数）
+- [x] **CONV-02**: 新建/切换/删除会话
+- [x] **CONV-03**: 历史滚动加载（分页，`before_id` 参数，IntersectionObserver）
+- [x] **CONV-04**: 首次 `/human` 调用时自动创建会话
 
 ### 前端框架
 
-- [ ] **UI-01**: Alpine.js 集成（CDN 引入），x-for/x-model/x-show 驱动聊天面板
-- [ ] **UI-02**: 消息气泡 CSS 样式 + 平滑过渡动画
-- [ ] **UI-03**: 时间戳显示（同天 HH:MM，跨天 月/日 时:分）
-- [ ] **UI-04**: 前端发送按钮 debounce，防止重复提交
+- [x] **UI-01**: Alpine.js 集成（CDN 引入），x-for/x-model/x-show 驱动聊天面板
+- [x] **UI-02**: 消息气泡 CSS 样式 + 平滑过渡动画
+- [x] **UI-03**: 时间戳显示（同天 HH:MM，跨天 月/日 时:分）
+- [x] **UI-04**: 前端发送按钮 debounce，防止重复提交
 
 ## v2 Requirements
 
@@ -107,25 +107,25 @@ Deferred to future milestone.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CHAT-01 | Phase 9 | Pending |
-| CHAT-02 | Phase 9 | Pending |
-| CHAT-04 | Phase 9 | Pending |
-| CHAT-05 | Phase 11 | Pending |
-| CHAT-03 | Phase 12 | Pending |
-| CHAT-06 | Phase 12 | Pending |
-| HIST-01 | Phase 10 | Pending |
-| HIST-02 | Phase 10 | Pending |
-| HIST-03 | Phase 10 | Pending |
-| HIST-04 | Phase 10 | Pending |
-| HIST-05 | Phase 10 | Pending |
-| CONV-01 | Phase 11 | Pending |
-| CONV-02 | Phase 11 | Pending |
-| CONV-03 | Phase 11 | Pending |
-| CONV-04 | Phase 11 | Pending |
-| UI-01 | Phase 9 | Pending |
-| UI-02 | Phase 9 | Pending |
-| UI-03 | Phase 9 | Pending |
-| UI-04 | Phase 10 | Pending |
+| CHAT-01 | Phase 9 | Complete |
+| CHAT-02 | Phase 9 | Complete |
+| CHAT-04 | Phase 9 | Complete |
+| CHAT-05 | Phase 11 | Complete |
+| CHAT-03 | Phase 12 | Complete |
+| CHAT-06 | Phase 12 | Complete |
+| HIST-01 | Phase 10 | Complete |
+| HIST-02 | Phase 10 | Complete |
+| HIST-03 | Phase 10 | Complete |
+| HIST-04 | Phase 10 | Complete |
+| HIST-05 | Phase 10 | Complete |
+| CONV-01 | Phase 11 | Complete |
+| CONV-02 | Phase 11 | Complete |
+| CONV-03 | Phase 11 | Complete |
+| CONV-04 | Phase 11 | Complete |
+| UI-01 | Phase 9 | Complete |
+| UI-02 | Phase 9 | Complete |
+| UI-03 | Phase 9 | Complete |
+| UI-04 | Phase 10 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 19 total
